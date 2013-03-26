@@ -1,0 +1,98 @@
+background yes
+
+use_xft yes
+xftfont Bitstream Vera Sans Mono:size=10
+#on_bottom yes
+
+update_interval 1.0
+
+total_run_times 0
+
+own_window_transparent no
+
+own_window yes # create a separate XWindow over the one from Xfdesktop
+own_window_type desktop # the window cannot be moved or resized
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager # make it behave like it belongs to the desktop
+own_window_colour black
+#own_window_argb_visual yes # true transparency, a compositor has to be active
+#own_window_argb_value 100 # make the background semi-transparent
+
+double_buffer yes # avoid flickering
+
+minimum_size 275 768
+maximum_width 275
+
+draw_shades yes
+draw_outline no
+draw_borders no
+stippled_borders 8
+#border_margin 4
+border_width 1
+
+default_color white
+default_shade_color black
+default_outline_color black
+
+alignment top_left
+
+gap_x 6
+gap_y 31
+
+no_buffers yes
+
+uppercase no
+
+cpu_avg_samples 2
+net_avg_samples 2
+
+override_utf8_locale no
+
+use_spacer none
+
+lua_load /home/wohanley/scripts/conky/cpufreq.lua
+
+color1 F22
+color2 DDD
+
+# stuff after 'TEXT' will be formatted on screen
+
+TEXT
+${color1}System
+${color1} Up${color2} $uptime ${alignr}${color1}Load${color2} $loadavg
+${color1} CPU (GHz) ${color2}${lua conky_cpu_freq_g 0}${color1}/${color2}${lua conky_cpu_freq_g 1}${color1}/${color2}${lua conky_cpu_freq_g 2}${color1}/${color2}${lua conky_cpu_freq_g 3}${color1}
+${color2} ${lua conky_cpufreq_driver}${alignr}${color1}Governor ${color2}${lua conky_cpufreq_governor}
+${color1} ${color2}$cpu% ${cpubar}
+${color2} ${cpugraph cpu0 37,271 EE1111 FF2222 s}
+${color1} GPU ${color2}${nvidia gpufreq} ${color1}| ${color2}${nvidia temp}${color1}/${color2}${nvidia threshold} ${color1}(${color2}${nvidia ambient}${color1})${color1}${iconv_start UTF-8 ISO_8859-1}°${iconv_stop}C
+${color1} RAM ${color2}$mem $memperc% ${membar}
+${color1} Swap ${color2}$swap $swapperc% ${swapbar}
+${color1} Processes${color2} $processes  ${color1}Running${color2} $running_processes
+
+${color1}CPU                PID  CPU%  MEM%
+${color2} ${top name 1}${top pid 1}${top cpu 1}${top mem 1}
+${color2} ${top name 2}${top pid 2}${top cpu 2}${top mem 2}
+${color2} ${top name 3}${top pid 3}${top cpu 3}${top mem 3}
+${color2} ${top name 4}${top pid 4}${top cpu 4}${top mem 4}
+${color2} ${top name 5}${top pid 5}${top cpu 5}${top mem 5}
+${color1}RAM
+${color2} ${top_mem name 1}${top_mem pid 1}${top_mem cpu 1}${top_mem mem 1}
+${color2} ${top_mem name 2}${top_mem pid 2}${top_mem cpu 2}${top_mem mem 2}
+${color2} ${top_mem name 3}${top_mem pid 3}${top_mem cpu 3}${top_mem mem 3}
+${color2} ${top_mem name 4}${top_mem pid 4}${top_mem cpu 4}${top_mem mem 4}
+${color2} ${top_mem name 5}${top_mem pid 5}${top_mem cpu 5}${top_mem mem 5}
+
+${color1}Networking
+ ${color1}Down${color2} ${downspeed wlan0}/s${color1}${alignr}Up${color2} ${upspeed wlan0}/s
+ ${color2}${downspeedgraph wlan0 32,130 EE1111 FF2222 s}${alignr}${color2}${upspeedgraph wlan0 32,130 EE1111 FF2222 s}
+ ${color1}${color2}${addr wlan0}${alignr}${color1}TCP Connections ${color2}${tcp_portmon 1 65535 count}
+
+${color1}Disk usage
+ ${color1}/ ${color2}${fs_used /}/${fs_size /} ${color2}${fs_bar /}
+ ${color1}var ${color2}${fs_used /var}/${fs_size /var} ${color2}${fs_bar /var}
+ ${color1}tmp ${color2}${fs_used /tmp}/${fs_size /tmp} ${color2}${fs_bar /tmp}
+ ${color1}home ${color2}${fs_used /home}/${fs_size /home} ${color2}${fs_bar /home}
+#
+#${color1}Monitors          CPU     FAN1   FAN2
+#${color2}                  ${i8k_cpu_temp}C     ${i8k_left_fan_status}    ${i8k_right_fan_status}
+
+${execpi 10800 /home/wohanley/scripts/arch/paconky.py /dev/shm/pacman}
