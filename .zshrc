@@ -456,7 +456,7 @@ if [[ $USER == root ]]; then
     post_prompt="%{$at_bold%}%{$fg_lred%}%#%{$reset_color%}%{$at_normal%}"
 else
     user_prompt="%{$at_bold%}%{$fg_pink%}%n%{$reset_color%}%{$at_normal%}"
-    post_prompt="%{$at_bold%}%{$fg_white%}%#%{$reset_color%}%{$at_normal%}"
+    post_prompt="%{$at_bold%}%{$fg_white%}☄%{$reset_color%}%{$at_normal%}"
 fi
 
 PS1="${user_prompt}${host_prompt}${history_prompt} ${directory_prompt} ${post_prompt} "
