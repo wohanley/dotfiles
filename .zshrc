@@ -333,16 +333,14 @@ bindkey -M viins ' ' magic-space
 
 # Finally, make sure the terminal is in application mode, when zle is
 # active. Only then are the values from $terminfo valid.
+if [[ -n ${terminfo[smkx]} ]] && [[ -n ${terminfo[rmkx]} ]]; then
+    
+    function zle-line-init () { echoti smkx }
+    function zle-line-finish () { echoti rmkx }
 
-function zle-line-init () {
-    echoti smkx
-}
-function zle-line-finish () {
-    echoti rmkx
-}
-
-zle -N zle-line-init
-zle -N zle-line-finish
+    zle -N zle-line-init
+    zle -N zle-line-finish
+fi
 
 #}}}
 
