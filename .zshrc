@@ -1,3 +1,9 @@
+# The vast majority of this is stolen from http://stackoverflow.com/questions/171563/whats-in-your-zshrc
+
+emulate sh
+source $HOME/.sharerc
+emulate zsh
+
 #{{{ ZSH Modules
 
 autoload -U compinit promptinit zcalc zsh-mime-setup
@@ -47,9 +53,7 @@ setopt NO_HUP
 
 setopt VI
 
-# only fools wouldn't do this ;-)
-export EDITOR="vim"
-
+export EDITOR="emacs"
 
 setopt IGNORE_EOF
 
@@ -73,6 +77,9 @@ setopt EXTENDED_GLOB
 
 # hows about arrays be awesome?  (that is, frew${cool}frew has frew surrounding all the variables, not just first and last
 #setopt RC_EXPAND_PARAM
+
+# turn off ZLE if running in Emacs
+[[ $EMACS = t ]] && unsetopt zle
 
 #}}}
 
@@ -469,5 +476,6 @@ zle -N edit-command-output
 
 #}}}
 
-# Print a fortune, of course
-fortune
+# OPAM configuration
+. /home/wohanley/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+eval `opam config env`
