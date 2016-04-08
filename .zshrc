@@ -469,5 +469,4 @@ zle -N edit-command-output
 
 #}}}
 
-# Print a fortune, of course
-fortune
+setopt rcquotes
