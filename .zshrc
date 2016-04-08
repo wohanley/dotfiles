@@ -1,3 +1,9 @@
+# The vast majority of this is stolen from http://stackoverflow.com/questions/171563/whats-in-your-zshrc
+
+emulate sh
+source $HOME/.sharerc
+emulate zsh
+
 #{{{ ZSH Modules
 
 autoload -U compinit promptinit zcalc zsh-mime-setup
@@ -47,9 +53,7 @@ setopt NO_HUP
 
 setopt VI
 
-# only fools wouldn't do this ;-)
-export EDITOR="vim"
-
+export EDITOR="emacs"
 
 setopt IGNORE_EOF
 
@@ -73,6 +77,9 @@ setopt EXTENDED_GLOB
 
 # hows about arrays be awesome?  (that is, frew${cool}frew has frew surrounding all the variables, not just first and last
 #setopt RC_EXPAND_PARAM
+
+# turn off ZLE if running in Emacs
+[[ $EMACS = t ]] && unsetopt zle
 
 #}}}
 
@@ -326,16 +333,14 @@ bindkey -M viins ' ' magic-space
 
 # Finally, make sure the terminal is in application mode, when zle is
 # active. Only then are the values from $terminfo valid.
+if [[ -n ${terminfo[smkx]} ]] && [[ -n ${terminfo[rmkx]} ]]; then
+    
+    function zle-line-init () { echoti smkx }
+    function zle-line-finish () { echoti rmkx }
 
-function zle-line-init () {
-    echoti smkx
-}
-function zle-line-finish () {
-    echoti rmkx
-}
-
-zle -N zle-line-init
-zle -N zle-line-finish
+    zle -N zle-line-init
+    zle -N zle-line-finish
+fi
 
 #}}}
 

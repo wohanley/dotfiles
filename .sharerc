@@ -1,0 +1,8 @@
+#!/bin/sh
+
+PATH="$PATH:/home/wohanley/bin:/home/wohanley/opt/activator-1.3.2:/home/wohanley/.gem/ruby/2.2.0/bin:/home/wohanley/.rbenv/bin:/home/wohanley/software/elm/.cabal-sandbox/bin:/usr/local/heroku/bin"
+export PATH
+alias ghc-usual="ghc -fwarn-missing-signatures"
+
+# for rbenv
+eval "$(rbenv init -)"

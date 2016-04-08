@@ -4,7 +4,7 @@ use_xft yes
 xftfont Bitstream Vera Sans Mono:size=10
 #on_bottom yes
 
-update_interval 1.0
+update_interval 0.8
 
 total_run_times 0
 
@@ -19,8 +19,8 @@ own_window_colour black
 
 double_buffer yes # avoid flickering
 
-minimum_size 275 768
-maximum_width 275
+minimum_size 310 768
+maximum_width 310
 
 draw_shades yes
 draw_outline no
@@ -51,6 +51,9 @@ use_spacer none
 
 lua_load /home/wohanley/scripts/conky/cpufreq.lua
 
+# tell nvidia stuff what display we're using
+# nvidia_display :0.0
+
 color1 F22
 color2 DDD
 
@@ -59,10 +62,10 @@ color2 DDD
 TEXT
 ${color1}System
 ${color1} Up${color2} $uptime ${alignr}${color1}Load${color2} $loadavg
-${color1} CPU (GHz) ${color2}${lua conky_cpu_freq_g 0}${color1}/${color2}${lua conky_cpu_freq_g 1}${color1}/${color2}${lua conky_cpu_freq_g 2}${color1}/${color2}${lua conky_cpu_freq_g 3}${color1}
-${color2} ${lua conky_cpufreq_driver}${alignr}${color1}Governor ${color2}${lua conky_cpufreq_governor}
+#${color1} CPU (GHz) ${color2}${lua conky_cpu_freq_g 0}${color1}/${color2}${lua conky_cpu_freq_g 1}${color1}/${color2}${lua conky_cpu_freq_g 2}${color1}/${color2}${lua conky_cpu_freq_g 3}${color1}
+#${color2} ${lua conky_cpufreq_driver}${alignr}${color1}Governor ${color2}${lua conky_cpufreq_governor}
 ${color1} ${color2}$cpu% ${cpubar}
-${color2} ${cpugraph cpu0 37,271 EE1111 FF2222 s}
+${color2} ${cpugraph cpu0 37,301 EE1111 FF2222 s}
 ${color1} GPU ${color2}${nvidia gpufreq} ${color1}| ${color2}${nvidia temp}${color1}/${color2}${nvidia threshold} ${color1}(${color2}${nvidia ambient}${color1})${color1}${iconv_start UTF-8 ISO_8859-1}°${iconv_stop}C
 ${color1} RAM ${color2}$mem $memperc% ${membar}
 ${color1} Swap ${color2}$swap $swapperc% ${swapbar}
@@ -83,7 +86,7 @@ ${color2} ${top_mem name 5}${top_mem pid 5}${top_mem cpu 5}${top_mem mem 5}
 
 ${color1}Networking
  ${color1}Down${color2} ${downspeed wlan0}/s${color1}${alignr}Up${color2} ${upspeed wlan0}/s
- ${color2}${downspeedgraph wlan0 32,130 EE1111 FF2222 s}${alignr}${color2}${upspeedgraph wlan0 32,130 EE1111 FF2222 s}
+ ${color2}${downspeedgraph wlan0 32,145 EE1111 FF2222 s}${alignr}${color2}${upspeedgraph wlan0 32,145 EE1111 FF2222 s}
  ${color1}${color2}${addr wlan0}${alignr}${color1}TCP Connections ${color2}${tcp_portmon 1 65535 count}
 
 ${color1}Disk usage
