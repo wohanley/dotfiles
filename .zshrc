@@ -75,6 +75,9 @@ setopt NUMERIC_GLOB_SORT
 # I don't know why I never set this before.
 setopt EXTENDED_GLOB
 
+# The cleanest possible English quote escaping
+setopt rcquotes
+
 # hows about arrays be awesome?  (that is, frew${cool}frew has frew surrounding all the variables, not just first and last
 #setopt RC_EXPAND_PARAM
 
@@ -473,5 +476,3 @@ edit-command-output() {
 zle -N edit-command-output
 
 #}}}
-
-setopt rcquotes
