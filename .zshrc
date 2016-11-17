@@ -122,7 +122,7 @@ alias mk=popd
 ##ls, the common ones I use a lot shortened for rapid fire usage
 
 if [[ `uname -s` == 'Darwin' ]] {
-	alias ls='ls -F'
+	alias ls='ls -G'
 } else {
 	alias ls='ls --color'
 }
