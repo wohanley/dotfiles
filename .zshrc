@@ -1,9 +1,5 @@
 # The vast majority of this is stolen from http://stackoverflow.com/questions/171563/whats-in-your-zshrc
 
-emulate sh
-source $HOME/.sharerc
-emulate zsh
-
 #{{{ ZSH Modules
 
 autoload -U compinit promptinit zcalc zsh-mime-setup
