@@ -1,9 +1,5 @@
 # The vast majority of this is stolen from http://stackoverflow.com/questions/171563/whats-in-your-zshrc
 
-emulate sh
-source $HOME/.sharerc
-emulate zsh
-
 #{{{ ZSH Modules
 
 autoload -U compinit promptinit zcalc zsh-mime-setup
@@ -75,6 +71,9 @@ setopt NUMERIC_GLOB_SORT
 # I don't know why I never set this before.
 setopt EXTENDED_GLOB
 
+# The cleanest possible English quote escaping
+setopt rcquotes
+
 # hows about arrays be awesome?  (that is, frew${cool}frew has frew surrounding all the variables, not just first and last
 #setopt RC_EXPAND_PARAM
 
@@ -117,7 +116,13 @@ HELPDIR=~/zsh_help
 alias mk=popd
 
 ##ls, the common ones I use a lot shortened for rapid fire usage
-alias ls='ls --color' #I like color
+
+if [[ `uname -s` == 'Darwin' ]] {
+	alias ls='ls -G'
+} else {
+	alias ls='ls --color'
+}
+
 alias l='ls -lFh'     #size,show type,human readable
 alias la='ls -lAFh'   #long list,show almost all,show type,human readable
 alias lr='ls -tRFh'   #sorted by date,recursive,show type,human readable
@@ -473,4 +478,3 @@ edit-command-output() {
 zle -N edit-command-output
 
 #}}}
-

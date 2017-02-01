@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # ~/.profile: executed by the command interpreter for login shells.
 # This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
 # exists.
@@ -16,20 +18,24 @@ if [ -n "$BASH_VERSION" ]; then
     fi
 fi
 
-PATH="$PATH:$HOME/bin:$HOME/.gem/ruby/2.1.0/bin:$HOME/software/elm/.cabal-sandbox/bin:/opt/gradle-1.9/bin"
-export PATH
+export JAVA_HOME="/lib/jvm/default"
+export JDK_HOME="/lib/jvm/default"
 
-JAVA_HOME="/lib/jvm/default"
-JDK_HOME="/lib/jvm/default"
-export JAVA_HOME
-export JDK_HOME
+export GOPATH="$HOME/vagrant/code/go"
+export PYTHONPATH="$PYTHONPATH:$HOME/lib/python"
 
-alias ghc-usual="ghc -fwarn-missing-signatures"
+export PATH="$PATH:$HOME/bin:$HOME/Applications/bin:$HOME/node/node_modules/.bin:$GOPATH/bin:$HOME/opt/activator-1.3.2:$HOME/.gem/ruby/2.2.0/bin:$HOME/.rbenv/bin:$HOME/software/elm/.cabal-sandbox/bin:/usr/local/heroku/bin"
 
 # add personal bin to PATH if it exists
 # is it a problem if it doesn't?
 if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
+    export PATH="$PATH:$HOME/bin"
 fi
+
+if [[ `uname -s` == 'Darwin' ]]
+    then launchctl setenv PATH $PATH
+fi
+
+alias ghc-usual="ghc -fwarn-missing-signatures"
 
 [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx
