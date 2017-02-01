@@ -65,6 +65,14 @@
 #"rxvt"
 #  Control + b:2 + Release
 
+"sh ~/scripts/kbd-backlight.sh down"
+    m:0x0 + c:237
+    XF86KbdBrightnessDown
+
+"sh ~/scripts/kbd-backlight.sh up"
+    m:0x0 + c:238
+    XF86KbdBrightnessUp
+
 "light -U 10"
     m:0x0 + c:232
     XF86MonBrightnessDown
