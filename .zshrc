@@ -84,6 +84,14 @@ export EDITOR=emacs
 export PAGER=less
 
 ################################################################################
+# Plugins
+################################################################################
+
+export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=$HOME/homebrew/share/zsh-syntax-highlighting/highlighters
+source $HOME/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $HOME/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+################################################################################
 # Completions
 ################################################################################
 
@@ -176,16 +184,14 @@ key[PageDown]=${terminfo[knp]}
 
 bindkey '^B' push-line
 
-# Ensure that arrow keys work as they should
-bindkey '\e[A' up-line-or-history
-bindkey '\eOA' up-line-or-history
-bindkey '\e[B' down-line-or-history
-bindkey '\eOB' down-line-or-history
+# history
+bindkey '\e[A' history-substring-search-up
+bindkey '\e[B' history-substring-search-down
+bindkey -M emacs '^P' history-substring-search-up
+bindkey -M emacs '^N' history-substring-search-down
 
 bindkey '\e[C' forward-char
-bindkey '\eOC' forward-char
 bindkey '\e[D' backward-char
-bindkey '\eOD' backward-char
 
 # Rebind insert and delete to more reasonable behaviour
 bindkey '\e[2~' overwrite-mode
@@ -228,7 +234,11 @@ setopt HIST_IGNORE_DUPS
 # Even if there are commands inbetween commands that are the same, still only save the last one
 setopt HIST_IGNORE_ALL_DUPS
 
-# Pretty    Obvious.  Right?
+# Just really no duplicates please
+setopt HIST_SAVE_NO_DUPS
+setopt HIST_EXPIRE_DUPS_FIRST
+setopt HIST_FIND_NO_DUPS
+
 setopt HIST_REDUCE_BLANKS
 
 # If a line starts with a space, don't save it.
@@ -240,10 +250,6 @@ setopt HIST_VERIFY
 
 # Save the time and how long a command ran
 setopt EXTENDED_HISTORY
-
-setopt HIST_SAVE_NO_DUPS
-setopt HIST_EXPIRE_DUPS_FIRST
-setopt HIST_FIND_NO_DUPS
 
 ################################################################################
 # Prompt
@@ -331,14 +337,6 @@ edit-command-output() {
  CURSOR=0
 }
 zle -N edit-command-output
-
-################################################################################
-# Plugins
-################################################################################
-
-source $HOME/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
-export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=$HOME/homebrew/share/zsh-syntax-highlighting/highlighters
-source $HOME/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 ################################################################################
 # Conveniences
