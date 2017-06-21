@@ -84,14 +84,6 @@ export EDITOR=emacs
 export PAGER=less
 
 ################################################################################
-# Plugins
-################################################################################
-
-export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=$HOME/homebrew/share/zsh-syntax-highlighting/highlighters
-source $HOME/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source $HOME/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
-
-################################################################################
 # Completions
 ################################################################################
 
@@ -183,12 +175,6 @@ key[PageDown]=${terminfo[knp]}
 [[ -n "${key[Right]}"   ]]  && bindkey  "${key[Right]}"   forward-char
 
 bindkey '^B' push-line
-
-# history
-bindkey '\e[A' history-substring-search-up
-bindkey '\e[B' history-substring-search-down
-bindkey -M emacs '^P' history-substring-search-up
-bindkey -M emacs '^N' history-substring-search-down
 
 bindkey '\e[C' forward-char
 bindkey '\e[D' backward-char
@@ -337,6 +323,24 @@ edit-command-output() {
  CURSOR=0
 }
 zle -N edit-command-output
+
+################################################################################
+# zsh-syntax-highlighting
+################################################################################
+
+export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=$HOME/homebrew/share/zsh-syntax-highlighting/highlighters
+source $HOME/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+################################################################################
+# zsh-history-substring-search
+################################################################################
+
+source $HOME/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+bindkey '\e[A' history-substring-search-up
+bindkey '\e[B' history-substring-search-down
+bindkey -M emacs '^P' history-substring-search-up
+bindkey -M emacs '^N' history-substring-search-down
 
 ################################################################################
 # Conveniences
