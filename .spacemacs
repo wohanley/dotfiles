@@ -31,14 +31,19 @@ values."
    dotspacemacs-configuration-layers
    '(
      clojure
+     python
+     zymeworks
      csv
      elm
      (go :variables
          go-use-gometalinter t
          go-tab-width 4)
+     html
+     markdown
      osx
      python
      react
+     ruby
      shell-scripts
      sql
      yaml
@@ -51,7 +56,7 @@ values."
      auto-completion
      ;; better-defaults
      emacs-lisp
-     ;; git
+     git
      ;; markdown
      ;; org
      ;; (shell :variables
@@ -292,16 +297,16 @@ values."
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
    dotspacemacs-whitespace-cleanup nil
-   ))
+   )
 
-(defun dotspacemacs/user-init ()
-  "Initialization function for user code.
+  (defun dotspacemacs/user-init ()
+    "Initialization function for user code.
 It is called immediately after `dotspacemacs/init', before layer configuration
 executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-  )
+    ))
 
 (defun wohanley/undo-kill-buffer (arg)
   "Re-open the last buffer killed.  With ARG, re-open the nth buffer. See
@@ -322,7 +327,7 @@ http://emacs.stackexchange.com/questions/3330/how-to-reopen-just-killed-buffer-l
      (if arg (nth arg recently-killed-list)
        (car recently-killed-list)))))
 
-(defun wohanley/use-eslint-from-node-modules ()
+(defun wohanley/flycheck-use-eslint-from-node-modules ()
   "Configure flycheck to use eslint from node_modules/.bin, if such an executable
 exists at such a path somewhere in the parent of the buffer's file. See
 http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslint-executable"
@@ -342,6 +347,10 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+
+  ;; anything that writes to the buffer while the region is active will
+  ;; overwrite it (like in most editors)
+  (delete-selection-mode 1)
   ;; <home> and <end> should do The Right Thing
   (global-unset-key (kbd "<end>"))
   (global-set-key (kbd "<end>") 'move-end-of-line)
@@ -354,13 +363,31 @@ you should place your code here."
   (global-set-key (kbd "C-S-s-<left>") 'sp-backward-barf-sexp)
   ;; undo kill buffer web browser style
   (global-set-key (kbd "C-S-t") 'wohanley/undo-kill-buffer)
+  ;; magit
+  (global-set-key (kbd "C-x g") 'magit-status)
   ;; fold bindings
   (spacemacs/set-leader-keys "z c" 'evil-close-fold)
   (spacemacs/set-leader-keys "z o" 'evil-open-fold)
+  ;; highlight symbol at point
+  (spacemacs/toggle-automatic-symbol-highlight-on)
   ;; dtrt-indent does nice dynamic tab length
-  (dtrt-indent-mode t)
+  ;; (dtrt-indent-mode t)
   ;; use local eslint
-  (add-hook 'flycheck-mode-hook 'wohanley/use-eslint-from-node-modules))
+  (add-hook 'flycheck-mode-hook 'wohanley/flycheck-use-eslint-from-node-modules)
+  ;; Go
+  (setq flycheck-gometalinter-fast t)
+  (setq flycheck-gometalinter-deadline "10s")
+  (setq flycheck-gometalinter-disable-linters '("gocyclo"))
+  ;; Less
+  (add-to-list 'auto-mode-alist '("\\.less\\'" . less-css-mode))
+  (add-to-list 'auto-mode-alist '("\\.less\\'" . flycheck-mode))
+  ;; .mak is a Mako template
+  (add-to-list 'auto-mode-alist '("\\.mak\\'" . web-mode))
+  ;; anaconda-mode can fuck itself
+  (remove-hook 'anaconda-mode-response-read-fail-hook
+               'anaconda-mode-show-unreadable-response)
+  ;; so "# -*- coding: utf8 -*-" works
+  (define-coding-system-alias 'utf8 'utf-8))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -369,14 +396,55 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ahs-idle-interval 0.75)
+ '(ansi-color-faces-vector
+   [default bold shadow italic underline bold bold-italic bold])
+ '(ansi-color-names-vector
+   (vector "#839496" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#eee8d5"))
+ '(css-indent-offset 2)
+ '(custom-enabled-themes (quote (sanityinc-solarized-light)))
+ '(custom-safe-themes
+   (quote
+    ("4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" default)))
+ '(dtrt-indent-max-lines 500)
  '(elm-format-on-save t)
+ '(evil-want-Y-yank-to-eol nil)
+ '(fci-rule-color "#073642")
+ '(js-indent-level 2)
+ '(js2-mode-show-parse-errors nil)
+ '(js2-mode-show-strict-warnings nil)
  '(package-selected-packages
    (quote
-    (insert-shebang fish-mode company-shell clojure-snippets clj-refactor inflections edn paredit peg cider-eval-sexp-fu cider seq queue clojure-mode git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-commit with-editor git-gutter diff-hl csv-mode helm-themes helm-swoop helm-projectile helm-mode-manager helm-flx helm-descbinds helm-ag ace-jump-helm-line dtrt-indent yaml-mode company-web web-completion-data company-tern dash-functional company-statistics company-go company-anaconda company auto-yasnippet ac-ispell auto-complete web-mode web-beautify tern tagedit slim-mode scss-mode sass-mode pug-mode livid-mode skewer-mode simple-httpd less-css-mode json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc haml-mode emmet-mode coffee-mode sql-indent flycheck-gometalinter go-guru go-eldoc go-mode flycheck-elm elm-mode flycheck-pos-tip pos-tip flycheck yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode cython-mode anaconda-mode pythonic reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler window-numbering which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump popup f s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash async aggressive-indent adaptive-wrap ace-window ace-link avy quelpa package-build spacemacs-theme)))
- '(web-mode-code-indent-offset 2))
+    (mmm-mode markdown-toc markdown-mode smeargle orgit org magit-gitflow gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit magit-popup git-commit with-editor insert-shebang fish-mode company-shell rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby csv-mode helm-themes helm-swoop helm-projectile helm-mode-manager helm-flx helm-descbinds helm-ag ace-jump-helm-line dtrt-indent yaml-mode company-web web-completion-data company-tern dash-functional company-statistics company-go company-anaconda company auto-yasnippet ac-ispell auto-complete web-mode web-beautify tern tagedit slim-mode scss-mode sass-mode pug-mode livid-mode skewer-mode simple-httpd less-css-mode json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc haml-mode emmet-mode coffee-mode sql-indent flycheck-gometalinter go-guru go-eldoc go-mode flycheck-elm elm-mode flycheck-pos-tip pos-tip flycheck yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode cython-mode anaconda-mode pythonic reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler window-numbering which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump popup f s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash async aggressive-indent adaptive-wrap ace-window ace-link avy quelpa package-build spacemacs-theme)))
+ '(vc-annotate-background nil)
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#dc322f")
+     (40 . "#cb4b16")
+     (60 . "#b58900")
+     (80 . "#859900")
+     (100 . "#2aa198")
+     (120 . "#268bd2")
+     (140 . "#d33682")
+     (160 . "#6c71c4")
+     (180 . "#dc322f")
+     (200 . "#cb4b16")
+     (220 . "#b58900")
+     (240 . "#859900")
+     (260 . "#2aa198")
+     (280 . "#268bd2")
+     (300 . "#d33682")
+     (320 . "#6c71c4")
+     (340 . "#dc322f")
+     (360 . "#cb4b16"))))
+ '(vc-annotate-very-old-color nil)
+ '(web-mode-code-indent-offset 2)
+ '(web-mode-css-indent-offset 2)
+ '(web-mode-markup-indent-offset 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(js2-error ((t nil)))
+ '(js2-external-variable ((t nil))))

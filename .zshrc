@@ -1,15 +1,17 @@
-# The vast majority of this is stolen from http://stackoverflow.com/questions/171563/whats-in-your-zshrc
+# A good chunk of this is stolen from http://stackoverflow.com/questions/171563/whats-in-your-zshrc
 
-#{{{ ZSH Modules
+################################################################################
+# Modules
+################################################################################
 
 autoload -U compinit promptinit zcalc zsh-mime-setup
 compinit
 promptinit
 zsh-mime-setup
 
-#}}}
-
-#{{{ Options
+################################################################################
+# Options
+################################################################################
 
 # why would you type 'cd dir' if you could just type 'dir'?
 setopt AUTO_CD
@@ -36,20 +38,13 @@ setopt PUSHD_MINUS
 # blank pushd goes to home
 setopt PUSHD_TO_HOME
 
-# this will ignore multiple directories for the stack.  Useful?  I dunno.
-setopt PUSHD_IGNORE_DUPS
-
-# 10 second wait if you do something that will delete everything.  I wish I'd had this before...
-setopt RM_STAR_WAIT
-
 # use magic (this is default, but it can't hurt!)
 setopt ZLE
 
+# turn off ZLE if running in Emacs
+[[ $EMACS = t ]] && unsetopt zle
+
 setopt NO_HUP
-
-setopt VI
-
-export EDITOR="emacs"
 
 setopt IGNORE_EOF
 
@@ -74,15 +69,10 @@ setopt EXTENDED_GLOB
 # The cleanest possible English quote escaping
 setopt rcquotes
 
-# hows about arrays be awesome?  (that is, frew${cool}frew has frew surrounding all the variables, not just first and last
-#setopt RC_EXPAND_PARAM
+################################################################################
+# Variables
+################################################################################
 
-# turn off ZLE if running in Emacs
-[[ $EMACS = t ]] && unsetopt zle
-
-#}}}
-
-#{{{ Variables
 export MATHPATH="$MANPATH:/usr/local/texlive/2007/texmf/doc/man"
 export INFOPATH="$INFOPATH:/usr/local/texlive/2007/texmf/doc/info"
 export PATH="$PATH:/usr/local/texlive/2007/bin/i386-linux"
@@ -90,123 +80,12 @@ export RI="--format ansi"
 
 declare -U path
 
-#export LANG=en_US
+export EDITOR=emacs
 export PAGER=less
-#}}}
 
-#{{{ External Files
-
-# Include stuff that should only be on this
-if [[ -r ~/.localinclude ]]; then
-    source ~/.localinclude
-fi
-
-# Include local directories
-if [[ -r ~/.localdirs ]]; then
-        source ~/.localdirs
-fi
-
-autoload run-help
-HELPDIR=~/zsh_help
-
-#}}}
-
-#{{{ Shell Conveniences
-
-alias mk=popd
-
-##ls, the common ones I use a lot shortened for rapid fire usage
-
-if [[ `uname -s` == 'Darwin' ]] {
-	alias ls='ls -G'
-} else {
-	alias ls='ls --color'
-}
-
-alias l='ls -lFh'     #size,show type,human readable
-alias la='ls -lAFh'   #long list,show almost all,show type,human readable
-alias lr='ls -tRFh'   #sorted by date,recursive,show type,human readable
-alias lt='ls -ltFh'   #long list,sorted by date,show type,human readable
- 
-# ##cd, because typing the backslash is ALOT of work!!
-alias .='cd ../'
-alias ..='cd ../../'
-alias ...='cd ../../../'
-alias ....='cd ../../../../'
-
-# for testing network connection
-alias gping='ping www.google.com'
-
-#}}}
-
-#{{{ Misc.
-if [[ -x `which tea_chooser` ]]; then
-# I need to do this more elegantly...
-    alias rt='cd /home/frew/bin/run/tea_chooser; ./randtea.rb'
-fi
-
-# CPAN and sudo don't work together or something
-if [[ -x `which perl` ]]; then
-  alias cpan="su root -c 'perl -MCPAN -e \"shell\"'"
-fi
-
-# For some reason the -ui doesn't work on Ubuntu... I need to deal with that
-# somehow...
-if [[ -x `which unison` ]]; then
-  alias un='unison -ui graphic -perms 0 default'
-  alias un.='unison -ui graphic -perms 0 dotfiles'
-fi
-
-# fri is faster.
-if [[ -x `which fri` ]]; then
-  alias ri=fri
-fi
-
-# copy with a progress bar.
-alias cpv="rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
-
-# I use the commands like, every day now
-alias seinr="sudo /etc/init.d/networking restart"
-if [[ -x `which gksudo` && -x `which wlassistant` ]]; then
-  alias gkw="gksudo wlassistant&"
-fi
-
-if [[ -x `which delish` ]]; then
-  alias delish="noglob delish"
-fi
-
-#Alt-S inserts "sudo "
-insert_sudo () { zle beginning-of-line; zle -U "sudo " }
-zle -N insert-sudo insert_sudo
-bindkey "^[s" insert-sudo
-
-#}}}
-
-#{{{ Globals...
-
-alias -g G="| grep"
-alias -g L="| less"
-
-#}}}
-
-#{{{ Suffixes...
-
-if [[ -x `which abiword` ]]; then
-  alias -s doc=abiword
-fi
-if [[ -x `which ooimpress` ]]; then
-  alias -s ppt='ooimpress &> /dev/null '
-fi
-
-if [[ $DISPLAY = '' ]] then
-  alias -s txt=vi
-else
-  alias -s txt=gvim
-fi
-
-#}}}
-
-#{{{ Completion Stuff
+################################################################################
+# Completions
+################################################################################
 
 bindkey -M viins '\C-i' complete-word
 
@@ -266,16 +145,15 @@ zstyle ':completion:*' ignore-parents parent pwd
 
 zstyle ':completion::approximate*:*' prefix-needed false
 
-#}}}
-
-#{{{ Key bindings
+################################################################################
+# Key bindings
+################################################################################
 
 # create a zkbd compatible hash;
 # to add other keys to this hash, see: man 5 terminfo
 typeset -A key
 
 key[Home]=${terminfo[khome]}
-
 key[End]=${terminfo[kend]}
 key[Insert]=${terminfo[kich1]}
 key[Delete]=${terminfo[kdch1]}
@@ -296,50 +174,19 @@ key[PageDown]=${terminfo[knp]}
 [[ -n "${key[Left]}"    ]]  && bindkey  "${key[Left]}"    backward-char
 [[ -n "${key[Right]}"   ]]  && bindkey  "${key[Right]}"   forward-char
 
-# Incremental search is elite!
-bindkey -M vicmd "/" history-incremental-search-backward
-bindkey -M vicmd "?" history-incremental-search-forward
-
-# Search based on what you typed in already
-bindkey -M vicmd "//" history-beginning-search-backward
-bindkey -M vicmd "??" history-beginning-search-forward
-
-bindkey "\eOP" run-help
-
-# oh wow!  This is killer...  try it!
-bindkey -M vicmd "q" push-line
-
-# Ensure that arrow keys work as they should
-bindkey '\e[A' up-line-or-history
-bindkey '\e[B' down-line-or-history
-
-bindkey '\eOA' up-line-or-history
-bindkey '\eOB' down-line-or-history
+bindkey '^B' push-line
 
 bindkey '\e[C' forward-char
 bindkey '\e[D' backward-char
 
-bindkey '\eOC' forward-char
-bindkey '\eOD' backward-char
-
-bindkey -M viins 'jj' vi-cmd-mode
-bindkey -M vicmd 'u' undo
-
-# Rebind the insert key.  I really can't stand what it currently does.
+# Rebind insert and delete to more reasonable behaviour
 bindkey '\e[2~' overwrite-mode
-
-# Rebind the delete key. Again, useless.
 bindkey '\e[3~' delete-char
-
-bindkey -M vicmd '!' edit-command-output
-
-# it's like, space AND completion.  Gnarlbot.
-bindkey -M viins ' ' magic-space
 
 # Finally, make sure the terminal is in application mode, when zle is
 # active. Only then are the values from $terminfo valid.
 if [[ -n ${terminfo[smkx]} ]] && [[ -n ${terminfo[rmkx]} ]]; then
-    
+
     function zle-line-init () { echoti smkx }
     function zle-line-finish () { echoti rmkx }
 
@@ -347,9 +194,9 @@ if [[ -n ${terminfo[smkx]} ]] && [[ -n ${terminfo[rmkx]} ]]; then
     zle -N zle-line-finish
 fi
 
-#}}}
-
-#{{{ History Stuff
+################################################################################
+# History
+################################################################################
 
 # Where it gets saved
 HISTFILE=~/.history
@@ -373,7 +220,11 @@ setopt HIST_IGNORE_DUPS
 # Even if there are commands inbetween commands that are the same, still only save the last one
 setopt HIST_IGNORE_ALL_DUPS
 
-# Pretty    Obvious.  Right?
+# Just really no duplicates please
+setopt HIST_SAVE_NO_DUPS
+setopt HIST_EXPIRE_DUPS_FIRST
+setopt HIST_FIND_NO_DUPS
+
 setopt HIST_REDUCE_BLANKS
 
 # If a line starts with a space, don't save it.
@@ -386,13 +237,9 @@ setopt HIST_VERIFY
 # Save the time and how long a command ran
 setopt EXTENDED_HISTORY
 
-setopt HIST_SAVE_NO_DUPS
-setopt HIST_EXPIRE_DUPS_FIRST
-setopt HIST_FIND_NO_DUPS
-
-#}}}
-
-#{{{ Prompt!
+################################################################################
+# Prompt
+################################################################################
 
 #Color table from: http://www.understudy.net/custom.html
 fg_black=$'\e[0;30m'
@@ -443,7 +290,7 @@ host_prompt="%{$at_bold%}%{$fg_lgreen%}@%m%{$reset_color%}%{$at_normal%}"
 
 jobs_prompt="%{$at_bold%}%{$fg_yellow%}(%j)%{$reset_color%}%{$at_normal%}"
 
-history_prompt="%{$at_bold%}%{$fg_white%}[%{$at_normal%}%{$fg_yellow%}%h%{$at_bold%}%{$fg_white%}|%{$at_normal%}%{$fg_yellow%}%T%{$at_bold%}%{$fg_white%}]%{$reset_color%}%{$at_normal%}"
+history_prompt="%{$at_bold%}%{$fg_white%}[%{$at_normal%}%{$fg_yellow%}%T%{$at_bold%}%{$fg_white%}]%{$reset_color%}%{$at_normal%}"
 
 error_prompt="%{$at_bold%}%{$fg_lred%}<%?>%{$reset_color%}%{$at_normal%}"
 
@@ -477,4 +324,50 @@ edit-command-output() {
 }
 zle -N edit-command-output
 
-#}}}
+################################################################################
+# zsh-syntax-highlighting
+################################################################################
+
+export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=$HOME/homebrew/share/zsh-syntax-highlighting/highlighters
+source $HOME/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+################################################################################
+# zsh-history-substring-search
+################################################################################
+
+source $HOME/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+bindkey '\e[A' history-substring-search-up
+bindkey '\e[B' history-substring-search-down
+bindkey -M emacs '^P' history-substring-search-up
+bindkey -M emacs '^N' history-substring-search-down
+
+################################################################################
+# Conveniences
+################################################################################
+
+# color is nice
+if [[ `uname -s` == 'Darwin' ]] {
+  alias ls='ls -G'
+} else {
+  alias ls='ls --color'
+}
+
+alias l='ls -lFh'     #size, show type, human readable
+alias la='ls -lAFh'   #long list, show almost all, show type, human readable
+alias lr='ls -tRFh'   #sorted by date, recursive, show type, human readable
+alias lt='ls -ltFh'   #long list, sorted by date, show type, human readable
+
+# cd, because typing the backslash is ALOT of work!!
+alias .='cd ../'
+alias ..='cd ../../'
+alias ...='cd ../../../'
+alias ....='cd ../../../../'
+
+# copy with a progress bar.
+alias cpv="rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
+
+# Alt-S inserts "sudo "
+insert_sudo () { zle beginning-of-line; zle -U "sudo " }
+zle -N insert-sudo insert_sudo
+bindkey "^[s" insert-sudo
