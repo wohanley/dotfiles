@@ -296,16 +296,16 @@ values."
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
    dotspacemacs-whitespace-cleanup nil
-   )
+   ))
 
-  (defun dotspacemacs/user-init ()
-    "Initialization function for user code.
+(defun dotspacemacs/user-init ()
+  "Initialization function for user code.
 It is called immediately after `dotspacemacs/init', before layer configuration
 executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-    ))
+  )
 
 (defun wohanley/undo-kill-buffer (arg)
   "Re-open the last buffer killed.  With ARG, re-open the nth buffer. See
