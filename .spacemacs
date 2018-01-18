@@ -356,7 +356,8 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
-
+  ;; don't look for completions on tab
+  (setq tab-always-indent t)
   ;; anything that writes to the buffer while the region is active will
   ;; overwrite it (like in most editors)
   (delete-selection-mode 1)
