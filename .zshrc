@@ -33,7 +33,7 @@ setopt GLOB_COMPLETE
 setopt PUSHD_MINUS
 
 # No more annoying pushd messages...
-# setopt PUSHD_SILENT
+setopt PUSHD_SILENT
 
 # blank pushd goes to home
 setopt PUSHD_TO_HOME

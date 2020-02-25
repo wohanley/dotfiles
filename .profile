@@ -14,14 +14,14 @@
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
     if [ -f "$HOME/.bashrc" ]; then
-	. "$HOME/.bashrc"
+	      . "$HOME/.bashrc"
     fi
 fi
 
 export JAVA_HOME="/lib/jvm/default"
 export JDK_HOME="/lib/jvm/default"
 
-export GOPATH="$HOME/vagrant/code/go"
+export GOPATH="$HOME/code/go"
 export PYTHONPATH="$PYTHONPATH:$HOME/lib/python"
 
 export PATH="$PATH:$HOME/bin:$HOME/scripts:$HOME/Applications/bin:$HOME/node/node_modules/.bin:$GOPATH/bin:$HOME/opt/activator-1.3.2:$HOME/.gem/ruby/2.6.0/bin:$HOME/.rbenv/bin:/usr/local/heroku/bin:$HOME/games/glulx"
