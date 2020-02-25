@@ -31,6 +31,7 @@ export PATH="$PATH:$HOME/bin:$HOME/Applications/bin:$HOME/node/node_modules/.bin
 if [ -d "$HOME/bin" ] ; then
     export PATH="$PATH:$HOME/bin"
 fi
+export QT_QPA_PLATFORMTHEME='qt5ct'
 
 if [[ `uname -s` == 'Darwin' ]]
     then launchctl setenv PATH $PATH
