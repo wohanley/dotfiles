@@ -23,6 +23,9 @@ if [ -f "$usermodmap" ]; then
     xmodmap "$usermodmap"
 fi
 
+# tap to click
+xinput set-prop "Elan Touchpad" "libinput Tapping Enabled" 1
+
 # start some nice programs
 
 if [ -d /etc/X11/xinit/xinitrc.d ] ; then
@@ -33,7 +36,8 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
 fi
 
 udiskie -2 &
-volnoti
+volnoti -t 1
 xbindkeys
+#/opt/piavpn/bin/piaclient & # not sure why this doesn't work here, put it in .config/i3/config instead
 
 exec i3
