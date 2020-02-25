@@ -107,10 +107,3 @@ fi
 
 # Avoid Apple double file system nonsense
 export COPY_EXTENDED_ATTRIBUTES_DISABLE=true
-
-# Add my own scripts directory to my path
-PATH=$PATH:~/bin
-export PATH
-
-# Print a fortune, brighten your day.
-fortune
