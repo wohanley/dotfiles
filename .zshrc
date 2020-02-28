@@ -80,7 +80,6 @@ export RI="--format ansi"
 
 declare -U path
 
-export EDITOR=emacs
 export PAGER=less
 
 ################################################################################

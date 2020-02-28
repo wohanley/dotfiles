@@ -32,6 +32,8 @@ if [[ `uname -s` == 'Darwin' ]]
     then launchctl setenv PATH $PATH
 fi
 
+export EDITOR=start-emacs
+
 alias ghc-usual="ghc -fwarn-missing-signatures"
 
 [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx
