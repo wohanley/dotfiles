@@ -29,49 +29,52 @@ This function should only modify configuration layer settings."
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
    dotspacemacs-configuration-layer-path '()
+
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(systemd
+   '(auto-completion
+     bibtex
      clojure
-     python
-     ;; elixir
      csv
+     deft
+     ;; elixir
+     emacs-lisp
+     git
+     python
      elm
      (go :variables
          go-use-gometalinter t
          go-tab-width 4)
      html
+     ivy
      markdown
-     osx
+     org
+     org-roam
      python
      react
      ruby
      shell-scripts
      sql
+     syntax-checking
+     systemd
+     version-control
      yaml
+     zotxt
+     who-org
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     ivy
-     auto-completion
      ;; better-defaults
-     emacs-lisp
-     git
      ;; helm
      ;; lsp
-     markdown
      ;; multiple-cursors
-     org
-     org-roam
      ;; (shell :variables
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
      ;; spell-checking
-     syntax-checking
      ;; treemacs
-     version-control
      )
 
    ;; List of additional packages that will be installed without being
@@ -190,8 +193,8 @@ It should only modify the values of Spacemacs settings."
    ;; `recents' `bookmarks' `projects' `agenda' `todos'.
    ;; List sizes may be nil, in which case
    ;; `spacemacs-buffer-startup-lists-length' takes effect.
-   dotspacemacs-startup-lists '((recents . 5)
-                                (projects . 7))
+   dotspacemacs-startup-lists '((recents . 10)
+                                (projects . 5))
 
    ;; True if the home buffer should respond to resize events. (default t)
    dotspacemacs-startup-buffer-responsive t
@@ -212,7 +215,7 @@ It should only modify the values of Spacemacs settings."
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(sanityinc-solarized-dark
-                         sanityinc-solarized-light)
+                        sanityinc-solarized-light)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
@@ -263,20 +266,6 @@ It should only modify the values of Spacemacs settings."
    ;; In the terminal, these pairs are generally indistinguishable, so this only
    ;; works in the GUI. (default nil)
    dotspacemacs-distinguish-gui-tab nil
-
-   ;; this section appears deprecated
-
-   ;; ;; If non nil `Y' is remapped to `y$' in Evil states. (default nil)
-   ;; dotspacemacs-remap-Y-to-y$ nil
-   ;; ;; If non-nil, the shift mappings `<' and `>' retain visual state if used
-   ;; ;; there. (default t)
-   ;; dotspacemacs-retain-visual-state-on-shift t
-   ;; ;; If non-nil, J and K move lines up and down when in visual mode.
-   ;; ;; (default nil)
-   ;; dotspacemacs-visual-line-move-text nil
-   ;; ;; If non nil, inverse the meaning of `g' in `:substitute' Evil ex-command.
-   ;; ;; (default nil)
-   ;; dotspacemacs-ex-substitute-global nil
 
    ;; Name of the default layout (default "Default")
    dotspacemacs-default-layout-name "Default"
@@ -404,6 +393,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil `smartparens-strict-mode' will be enabled in programming modes.
    ;; (default nil)
+   dotspacemacs-smartparens-strict-mode nil
 
    ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
    ;; over any automatically added closing parenthesis, bracket, quote, etc...
@@ -497,7 +487,7 @@ This function is called only while dumping Spacemacs configuration. You can
 dump."
   )
 
-(defun wohanley/undo-kill-buffer (arg)
+(defun who/undo-kill-buffer (arg)
   "Re-open the last buffer killed.  With ARG, re-open the nth buffer. See
 http://emacs.stackexchange.com/questions/3330/how-to-reopen-just-killed-buffer-like-c-s-t-in-firefox-browser"
   (interactive "p")
@@ -516,7 +506,7 @@ http://emacs.stackexchange.com/questions/3330/how-to-reopen-just-killed-buffer-l
      (if arg (nth arg recently-killed-list)
        (car recently-killed-list)))))
 
-(defun wohanley/flycheck-use-eslint-from-node-modules ()
+(defun who/flycheck-use-eslint-from-node-modules ()
   "Configure flycheck to use eslint from node_modules/.bin, if such an executable
 exists at such a path somewhere in the parent of the buffer's file. See
 http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslint-executable"
@@ -529,6 +519,23 @@ http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslin
     (when (and eslint (file-executable-p eslint))
       (setq-local flycheck-javascript-eslint-executable eslint))))
 
+;; xdg-open and advising find-file per https://emacs.stackexchange.com/questions/3105/how-to-use-an-external-program-as-the-default-way-to-open-pdfs-from-emacs
+
+(defun who/xdg-open (filename)
+  (interactive "Filename: ")
+  (let ((process-connection-type))
+    (start-process "" nil "xdg-open" (expand-file-name filename))))
+
+(defun who/find-file-auto (orig-fun &rest args)
+  (let ((filename (car args)))
+    (if (cl-find-if
+         (lambda (regexp) (string-match regexp filename))
+         '("\\.pdf\\'" "\\.docx?\\'"))
+        (who/xdg-open filename)
+      (apply orig-fun args))))
+
+(advice-add 'find-file :around 'who/find-file-auto)
+
 (defun dotspacemacs/user-config ()
   "Configuration for user code:
 This function is called at the very end of Spacemacs startup, after layer
@@ -536,12 +543,17 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
+  (add-hook 'text-mode-hook 'spacemacs/toggle-visual-line-navigation-on)
+
   ;; kill frame but keep daemon running per https://medium.com/@bobbypriambodo/blazingly-fast-spacemacs-with-persistent-server-92260f2118b7
   (spacemacs/set-leader-keys "q q" 'spacemacs/frame-killer)
   (spacemacs/set-leader-keys "q Q" 'spacemacs/prompt-kill-emacs)
 
   ;; don't look for completions on tab
   (setq tab-always-indent t)
+
+  ;; follow symlinks to source-controlled files without asking
+  (setq vc-follow-symlinks t)
 
   ;; anything that writes to the buffer while the region is active will
   ;; overwrite it (like in most editors)
@@ -560,7 +572,7 @@ before packages are loaded."
   (global-set-key (kbd "C-S-s-<right>") 'sp-forward-barf-sexp)
   (global-set-key (kbd "C-S-s-<left>") 'sp-backward-barf-sexp)
   ;; undo kill buffer web browser style
-  (global-set-key (kbd "C-S-t") 'wohanley/undo-kill-buffer)
+  (global-set-key (kbd "C-S-t") 'who/undo-kill-buffer)
   ;; magit
   (global-set-key (kbd "C-x g") 'magit-status)
   ;; fold bindings
@@ -571,7 +583,7 @@ before packages are loaded."
   ;; dtrt-indent does nice dynamic tab length
   ;; (dtrt-indent-mode t)
   ;; use local eslint
-  (add-hook 'flycheck-mode-hook 'wohanley/flycheck-use-eslint-from-node-modules)
+  (add-hook 'flycheck-mode-hook 'who/flycheck-use-eslint-from-node-modules)
   ;; Go
   (setq flycheck-gometalinter-fast t)
   (setq flycheck-gometalinter-deadline "10s")
@@ -585,9 +597,8 @@ before packages are loaded."
   (remove-hook 'anaconda-mode-response-read-fail-hook
                'anaconda-mode-show-unreadable-response)
   ;; so "# -*- coding: utf8 -*-" works
-  (define-coding-system-alias 'utf8 'utf-8)
-  ;; org-roam
-  (add-hook 'after-init-hook 'org-roam--build-cache-async))
+  (define-coding-system-alias 'utf8 'utf-8))
+
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -602,7 +613,6 @@ before packages are loaded."
  '(ansi-color-names-vector
    (vector "#839496" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#eee8d5"))
  '(css-indent-offset 2)
- '(custom-enabled-themes (quote (sanityinc-solarized-light)))
  '(custom-safe-themes
    (quote
     ("4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" default)))
@@ -613,7 +623,6 @@ before packages are loaded."
  '(js-indent-level 2)
  '(js2-mode-show-parse-errors nil)
  '(js2-mode-show-strict-warnings nil)
- '(org-roam-directory "~/roam" t)
  '(package-selected-packages
    (quote
     (org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download htmlize gnuplot org-roam winum git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter fuzzy transient reformatter diff-hl clojure-snippets clj-refactor inflections paredit lv cider-eval-sexp-fu cider sesman queue parseedn clojure-mode parseclj a gh-md mmm-mode markdown-toc markdown-mode smeargle orgit org magit-gitflow gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit magit-popup git-commit with-editor insert-shebang fish-mode company-shell rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby csv-mode helm-themes helm-swoop helm-projectile helm-mode-manager helm-flx helm-descbinds helm-ag ace-jump-helm-line dtrt-indent yaml-mode company-web web-completion-data company-tern dash-functional company-statistics company-go company-anaconda company auto-yasnippet ac-ispell auto-complete web-mode web-beautify tern tagedit slim-mode scss-mode sass-mode pug-mode livid-mode skewer-mode simple-httpd less-css-mode json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc haml-mode emmet-mode coffee-mode sql-indent flycheck-gometalinter go-guru go-eldoc go-mode flycheck-elm elm-mode flycheck-pos-tip pos-tip flycheck yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode cython-mode anaconda-mode pythonic reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler window-numbering which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump popup f s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash async aggressive-indent adaptive-wrap ace-window ace-link avy quelpa package-build spacemacs-theme)))
@@ -650,3 +659,73 @@ before packages are loaded."
  ;; If there is more than one, they won't work right.
  '(js2-error ((t nil)))
  '(js2-external-variable ((t nil))))
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ahs-idle-interval 0.75)
+ '(ansi-color-faces-vector
+   [default bold shadow italic underline bold bold-italic bold])
+ '(ansi-color-names-vector
+   (vector "#839496" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#eee8d5"))
+ '(bibtex-completion-pdf-open-function (quote find-file))
+ '(css-indent-offset 2)
+ '(custom-safe-themes
+   (quote
+    ("4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" default)))
+ '(dtrt-indent-max-lines 500)
+ '(elm-format-on-save t)
+ '(evil-want-Y-yank-to-eol nil)
+ '(fci-rule-color "#073642" t)
+ '(js-indent-level 2)
+ '(js2-mode-show-parse-errors nil)
+ '(js2-mode-show-strict-warnings nil)
+ '(org-bullets-bullet-list (quote ("◉" "○")))
+ '(org-ref-bibliography-notes "~/think/bibliography/notes.org")
+ '(org-ref-completion-library (quote org-ref-ivy-cite))
+ '(org-ref-default-bibliography "~/think/bibliography/references.bib")
+ '(org-ref-pdf-directory (quote ("\"~/think/bibliography/pdfs/\"")))
+ '(org-roam-mode t nil (org-roam))
+ '(package-selected-packages
+   (quote
+    (org-gcal request-deferred org-clock-convenience org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download htmlize gnuplot org-roam winum git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter fuzzy transient reformatter diff-hl clojure-snippets clj-refactor inflections paredit lv cider-eval-sexp-fu cider sesman queue parseedn clojure-mode parseclj a gh-md mmm-mode markdown-toc markdown-mode smeargle orgit org magit-gitflow gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit magit-popup git-commit with-editor insert-shebang fish-mode company-shell rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby csv-mode helm-themes helm-swoop helm-projectile helm-mode-manager helm-flx helm-descbinds helm-ag ace-jump-helm-line dtrt-indent yaml-mode company-web web-completion-data company-tern dash-functional company-statistics company-go company-anaconda company auto-yasnippet ac-ispell auto-complete web-mode web-beautify tern tagedit slim-mode scss-mode sass-mode pug-mode livid-mode skewer-mode simple-httpd less-css-mode json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc haml-mode emmet-mode coffee-mode sql-indent flycheck-gometalinter go-guru go-eldoc go-mode flycheck-elm elm-mode flycheck-pos-tip pos-tip flycheck yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode cython-mode anaconda-mode pythonic reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler window-numbering which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump popup f s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash async aggressive-indent adaptive-wrap ace-window ace-link avy quelpa package-build spacemacs-theme)))
+ '(vc-annotate-background nil)
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#dc322f")
+     (40 . "#cb4b16")
+     (60 . "#b58900")
+     (80 . "#859900")
+     (100 . "#2aa198")
+     (120 . "#268bd2")
+     (140 . "#d33682")
+     (160 . "#6c71c4")
+     (180 . "#dc322f")
+     (200 . "#cb4b16")
+     (220 . "#b58900")
+     (240 . "#859900")
+     (260 . "#2aa198")
+     (280 . "#268bd2")
+     (300 . "#d33682")
+     (320 . "#6c71c4")
+     (340 . "#dc322f")
+     (360 . "#cb4b16"))))
+ '(vc-annotate-very-old-color nil)
+ '(web-mode-code-indent-offset 2)
+ '(web-mode-css-indent-offset 2)
+ '(web-mode-markup-indent-offset 2)
+ '(zotxt-default-bibliography-style "who-short" t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(js2-error ((t nil)))
+ '(js2-external-variable ((t nil))))
+)
