@@ -258,9 +258,6 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
            (todo "TODO"
                  ((org-agenda-overriding-header "To Refile")
                   (org-agenda-files '(,(concat who/org-agenda-directory "inbox.org")))))
-           (todo "TODO"
-                 ((org-agenda-overriding-header "Emails")
-                  (org-agenda-files '(,(concat who/org-agenda-directory "emails.org")))))
            (todo "NEXT"
                  ((org-agenda-overriding-header "In Progress")
                   (org-agenda-files '(,(concat who/org-agenda-directory "someday.org")
@@ -268,14 +265,20 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
                                       ,(concat who/org-agenda-directory "next.org")))
                   ))
            (todo "TODO"
-                 ((org-agenda-overriding-header "Projects")
-                  (org-agenda-files '(,(concat who/org-agenda-directory "projects")))
-                  ))
-           (todo "TODO"
-                 ((org-agenda-overriding-header "One-off Tasks")
-                  (org-agenda-files '(,(concat who/org-agenda-directory "next.org")))
+                 ((org-agenda-overriding-header "Backlog")
+                  (org-agenda-files '(,(concat who/org-agenda-directory "next.org")
+                                      ,(concat who/org-agenda-directory "projects")))
                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled)))
-                  ))
+                 )
+           (todo "HOLD"
+                 ((org-agenda-overriding-header "Blocked")
+                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled)))
+                 )
+           (todo "TODO"
+                 ((org-agenda-overriding-header "Someday")
+                  (org-agenda-files '(,(concat who/org-agenda-directory "someday.org")))
+                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled)))
+                 ))
            nil))
 
   (add-to-list 'org-agenda-custom-commands `,who/org-agenda-todo-view)
