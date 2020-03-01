@@ -45,8 +45,10 @@
   (require 'org-protocol)
   (require 'org-tempo)
 
+  (add-to-list 'org-modules 'org-habit)
   (add-to-list 'org-modules 'org-protocol)
 
+  (setq org-startup-folded 'showall)
   (setq org-return-follows-link t)
   (setq org-link-frame-setup '((file . find-file))) ;; follow links in same window
   (setq org-agenda-diary-file "~/org/diary.org")
@@ -254,8 +256,7 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
         `(" " "Agenda"
           ((agenda ""
                    ((org-agenda-span 'day)
-                    (org-deadline-warning-days 365)
-                    (org-agenda-sorting-strategy '(deadline-up priority-down))))
+                    (org-deadline-warning-days 30)))
            (todo "NEXT"
                  ((org-agenda-overriding-header "In Progress")
                   (org-agenda-files '(,(concat who/org-agenda-directory "someday.org")
