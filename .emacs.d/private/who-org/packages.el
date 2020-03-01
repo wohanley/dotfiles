@@ -256,15 +256,15 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
                    ((org-agenda-span 'day)
                     (org-deadline-warning-days 365)
                     (org-agenda-sorting-strategy '(deadline-up priority-down))))
-           (todo "TODO"
-                 ((org-agenda-overriding-header "To Refile")
-                  (org-agenda-files '(,(concat who/org-agenda-directory "inbox.org")))))
            (todo "NEXT"
                  ((org-agenda-overriding-header "In Progress")
                   (org-agenda-files '(,(concat who/org-agenda-directory "someday.org")
                                       ,(concat who/org-agenda-directory "projects")
                                       ,(concat who/org-agenda-directory "next.org")))
                   ))
+           (todo "TODO"
+                 ((org-agenda-overriding-header "To Refile")
+                  (org-agenda-files '(,(concat who/org-agenda-directory "inbox.org")))))
            (todo "TODO"
                  ((org-agenda-overriding-header "Backlog")
                   (org-agenda-files '(,(concat who/org-agenda-directory "next.org")
