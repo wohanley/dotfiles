@@ -254,7 +254,8 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
         `(" " "Agenda"
           ((agenda ""
                    ((org-agenda-span 'day)
-                    (org-deadline-warning-days 365)))
+                    (org-deadline-warning-days 365)
+                    (org-agenda-sorting-strategy '(deadline-up priority-down))))
            (todo "TODO"
                  ((org-agenda-overriding-header "To Refile")
                   (org-agenda-files '(,(concat who/org-agenda-directory "inbox.org")))))
