@@ -16,6 +16,7 @@
         "arl" 'org-roam
         "art" 'org-roam-today
         "arf" 'org-roam-find-file
+        "ari" 'org-roam-insert
         "arg" 'org-roam-show-graph)
 
       (spacemacs/declare-prefix-for-mode 'org-mode "mr" "org-roam")
