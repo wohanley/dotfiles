@@ -1,6 +1,6 @@
 ;;; packages.el --- who-org layer packages file for Spacemacs.
 ;;
-;; org-roam stuff, much from https://github.com/whokuan/.emacs.d
+;; org-mode stuff, much from https://github.com/jethrokuan/.emacs.d
 ;;
 ;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
 ;;
@@ -53,6 +53,8 @@
   (setq org-link-frame-setup '((file . find-file))) ;; follow links in same window
   (setq org-agenda-diary-file "~/org/diary.org")
   (setq org-catch-invisible-edits 'show)
+  (setq org-habit-preceding-days 21)
+  (setq org-habit-following-days 7)
 
   (defun who/style-org ()
     (setq line-spacing 0.2)
@@ -322,17 +324,6 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
   (setq org-agenda-bulk-custom-functions `((,who/org-agenda-bulk-process-key who/org-agenda-process-inbox-item)))
 
   (add-hook 'org-clock-in-hook 'who/set-todo-state-next 'append))
-
-;; this seems to be managed in spacemacs-org
-;; (defun who-org/init-org-bullets ()
-;;   ;; Unicode bullets
-;;   (use-package org-bullets
-;;     :after org
-;;     :hook
-;;     (org-mode . org-bullets-mode)
-;;     :custom
-;;     (org-bullets-bullet-list
-;;      '("◉" "○"))))
 
 (defun who-org/init-org-clock-convenience ()
   (use-package org-clock-convenience
