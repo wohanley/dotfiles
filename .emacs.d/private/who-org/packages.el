@@ -32,7 +32,7 @@
 ;;; Code:
 
 (defconst who-org-packages
-  '(deft org org-agenda org-clock-convenience org-gcal org-roam))
+  '(deft org org-agenda org-clock-convenience org-gcal org-noter org-roam))
 
 (defun who-org/post-init-deft ()
   (setq deft-recursive 1)
@@ -346,6 +346,22 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
         org-gcal-client-secret (who/get-file-contents "~/org/.org-gcal-client-secret")
         org-gcal-fetch-file-alist '(("willy.ohanley@gmail.com" . "~/org/gtd/calendars/personal.org")
                                     ("lmv5qq6jrpqbkgveladotgbgmg@group.calendar.google.com" . "~/org/gtd/calendars/class.org"))))
+
+(defun who/org-noter-insert-highlighted-note ()
+  "Highlight the active region and add a precise note at its position."
+  (interactive)
+  ;; Adding an annotation will deatctivate the region, so we reset it afterward
+  (let ((region (pdf-view-active-region)))
+    (call-interactively 'pdf-annot-add-highlight-markup-annotation)
+    (setq pdf-view-active-region region))
+  (call-interactively 'org-noter-insert-precise-note))
+
+(defun who-org/init-org-noter ()
+  (use-package org-noter
+    :after org
+    :bind (:map org-noter-doc-mode-map
+                ("d" . 'who/org-noter-insert-highlighted-note)
+                ("h" . 'pdf-annot-add-highlight-markup-annotation))))
 
 (defun who-org/post-init-org-roam ()
   (setq org-roam-directory "~/org/zettelkasten")
