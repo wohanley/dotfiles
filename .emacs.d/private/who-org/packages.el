@@ -32,7 +32,7 @@
 ;;; Code:
 
 (defconst who-org-packages
-  '(deft org org-agenda org-clock-convenience org-gcal org-noter org-roam))
+  '(deft org org-agenda org-clock-convenience org-download org-gcal org-noter org-roam))
 
 (defun who-org/post-init-deft ()
   (setq deft-recursive 1)
@@ -131,7 +131,7 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
               (car (url-path-and-query
                     (url-generic-parse-url link)))))
             ;; Create folder name with current buffer name, and place in root dir
-            (dirname (concat "./images/"
+            (dirname (concat "~/org/download/"
                              (replace-regexp-in-string " " "_" (downcase (file-name-base buffer-file-name))))))
 
         ;; Add timestamp to filename
@@ -332,6 +332,14 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
                ("<S-down>" . org-clock-convenience-timestamp-down)
                ("o" . org-clock-convenience-fill-gap)
                ("e" . org-clock-convenience-fill-gap-both))))
+
+(defun who-org/post-init-org-download ()
+  (use-package org-download
+    :after org
+    :bind
+    (:map org-mode-map
+          (("s-Y" . org-download-screenshot)
+           ("s-y" . org-download-yank)))))
 
 (defun who-org/init-org-gcal ()
 
