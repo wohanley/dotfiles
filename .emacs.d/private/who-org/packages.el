@@ -350,11 +350,22 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
 (defun who/org-noter-insert-highlighted-note ()
   "Highlight the active region and add a precise note at its position."
   (interactive)
-  ;; Adding an annotation will deatctivate the region, so we reset it afterward
+  ;; Adding an annotation will deactivate the region, so we reset it afterward
   (let ((region (pdf-view-active-region)))
     (call-interactively 'pdf-annot-add-highlight-markup-annotation)
     (setq pdf-view-active-region region))
   (call-interactively 'org-noter-insert-precise-note))
+
+;; (defun who-org/init-org-pdftools ()
+;;   (use-package org-pdftools
+;;     :config (setq org-pdftools-root-dir "~/org/library")
+;;     (with-eval-after-load 'org
+;;       (org-link-set-parameters "pdftools"
+;;                                :follow #'org-pdftools-open
+;;                                :complete #'org-pdftools-complete-link
+;;                                :store #'org-pdftools-store-link
+;;                                :export #'org-pdftools-export)
+;;       (add-hook 'org-store-link-functions 'org-pdftools-store-link))))
 
 (defun who-org/init-org-noter ()
   (use-package org-noter
@@ -362,6 +373,10 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
     :bind (:map org-noter-doc-mode-map
                 ("d" . 'who/org-noter-insert-highlighted-note)
                 ("h" . 'pdf-annot-add-highlight-markup-annotation))))
+
+;; (defun who-org/init-org-noter-pdftools ()
+;;   (use-package org-noter-pdftools
+;;     :after org-noter))
 
 (defun who-org/post-init-org-roam ()
   (setq org-roam-directory "~/org/zettelkasten")
