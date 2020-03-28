@@ -99,8 +99,8 @@
   (setq org-capture-templates
         `(("i" "inbox" entry (file ,(concat who/org-agenda-directory "inbox.org"))
            "* TODO %?")
-          ("e" "email" entry (file+headline ,(concat who/org-agenda-directory "emails.org") "Emails")
-           "* TODO [#A] Reply: %a :@home:@school:" :immediate-finish t)
+          ("e" "email" entry (file+headline ,(concat who/org-agenda-directory "inbox.org") "Emails")
+           "* TODO [#B] Reply: %a :@home:@school:" :immediate-finish t)
           ("l" "link" entry (file ,(concat who/org-agenda-directory "inbox.org"))
            "* TODO %(org-cliplink-capture)" :immediate-finish t)
           ("c" "org-protocol-capture" entry (file ,(concat who/org-agenda-directory "inbox.org"))
@@ -121,6 +121,7 @@
     (if (memq window-system '(mac ns))
         (setq org-download-screenshot-method "screencapture -i %s")
       (setq org-download-screenshot-method "maim -s %s"))
+
     (defun my-org-download-method (link)
       "This is a helper function for org-download.
 It creates a folder in the root directory (~/.org/img/) named after the
