@@ -135,7 +135,7 @@ Each entry is either:
     (defun who/notmuch-search-ham ()
       (interactive)
       (ham-start-process (notmuch-search-find-thread-id))
-      (notmuch-search-tag (list "-spam" "-maybe-spam" "+inbox")))
+      (notmuch-search-tag (list "-spam" "-maybe-spam")))
 
     (defun who/notmuch-search-spam ()
       (interactive)
@@ -163,7 +163,7 @@ Each entry is either:
     (defun who/notmuch-tree-ham ()
       (interactive)
       (ham-start-process (notmuch-tree-get-messages-ids-thread-search))
-      (notmuch-tree-tag-thread (list "-spam" "-maybe-spam" "+inbox")))
+      (notmuch-tree-tag-thread (list "-spam" "-maybe-spam")))
 
     (defun who/notmuch-tree-spam ()
       (interactive)
@@ -223,5 +223,6 @@ timestamp."
     (notmuch-message-headers '("To" "Cc" "Subject" "Bcc"))
     (notmuch-saved-searches '((:name "inbox" :query "tag:inbox" :key "j" :search-type tree)
                               (:name "unread" :query "tag:inbox and tag:unread" :key "u")
+                              (:name "spam" :query "tag:spam" :key "s")
                               (:name "drafts" :query "tag:draft" :key "d")))))
 ;;; packages.el ends here
