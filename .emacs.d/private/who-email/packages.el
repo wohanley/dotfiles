@@ -91,6 +91,9 @@ Each entry is either:
            ("c" . who/org-capture-email))
 
     :config
+    (add-to-list 'load-path "~/.emacs.d/private/who-email/extra")
+    (require 'notmuch-calendar-x)
+
     (defun who/org-capture-email ()
       (interactive)
       (org-capture nil "e"))
