@@ -375,27 +375,31 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
     (setq pdf-view-active-region region))
   (call-interactively 'org-noter-insert-precise-note))
 
-;; (defun who-org/init-org-pdftools ()
-;;   (use-package org-pdftools
-;;     :config (setq org-pdftools-root-dir "~/org/library")
-;;     (with-eval-after-load 'org
-;;       (org-link-set-parameters "pdftools"
-;;                                :follow #'org-pdftools-open
-;;                                :complete #'org-pdftools-complete-link
-;;                                :store #'org-pdftools-store-link
-;;                                :export #'org-pdftools-export)
-;;       (add-hook 'org-store-link-functions 'org-pdftools-store-link))))
-
 (defun who-org/init-org-noter ()
   (use-package org-noter
     :after org
+    ;; :config
+    ;; (require 'org-noter-pdftools)
+    ;; (with-eval-after-load pdf-tools
+    ;;   (setq pdf-annot-activate-handler-functions #'org-noter-jump-to-note))
     :bind (:map org-noter-doc-mode-map
                 ("d" . 'who/org-noter-insert-highlighted-note)
                 ("h" . 'pdf-annot-add-highlight-markup-annotation))))
 
-;; (defun who-org/init-org-noter-pdftools ()
-;;   (use-package org-noter-pdftools
-;;     :after org-noter))
+(defun who-org/init-org-pdftools ()
+  (use-package org-pdftools
+    :config (setq org-pdftools-root-dir "~/org/library")
+    (with-eval-after-load 'org
+      (org-link-set-parameters "pdftools"
+                               :follow #'org-pdftools-open
+                               :complete #'org-pdftools-complete-link
+                               :store #'org-pdftools-store-link
+                               :export #'org-pdftools-export)
+      (add-hook 'org-store-link-functions 'org-pdftools-store-link)))
+
+  ;; (use-package org-noter-pdftools
+  ;;   :after (org-noter))
+)
 
 (defun who-org/post-init-org-roam ()
   (setq org-roam-directory "~/org/zettelkasten")
