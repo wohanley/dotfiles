@@ -32,7 +32,7 @@
 ;;; Code:
 
 (defconst who-org-packages
-  '(deft org org-agenda org-clock-convenience org-download org-gcal org-noter org-roam))
+  '(deft org org-agenda org-clock-convenience org-download org-emms org-gcal org-noter org-pdftools org-roam))
 
 (defun who-org/post-init-deft ()
   (setq deft-recursive 1)
@@ -341,6 +341,16 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
     (:map org-mode-map
           (("s-Y" . org-download-screenshot)
            ("s-y" . org-download-yank)))))
+
+(defun who-org/init-org-emms ()
+  (add-to-list 'load-path "~/.emacs.d/private/who-org/extra/emms-5.3/lisp")
+
+  (require 'emms-setup)
+  (emms-all)
+  (emms-default-players)
+
+  (use-package org-emms
+    :config (setq org-emms-default-directory "~/org/library")))
 
 (defun who-org/init-org-gcal ()
 
