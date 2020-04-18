@@ -283,11 +283,19 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
       (insert-file-contents filename)
       (buffer-string)))
 
-  (require 'org-gcal)
-  (setq org-gcal-client-id (who/get-file-contents "~/org/.org-gcal-client-id")
-        org-gcal-client-secret (who/get-file-contents "~/org/.org-gcal-client-secret")
-        org-gcal-fetch-file-alist '(("willy.ohanley@gmail.com" . "~/org/gtd/calendars/personal.org")
-                                    ("lmv5qq6jrpqbkgveladotgbgmg@group.calendar.google.com" . "~/org/gtd/calendars/class.org"))))
+  (use-package org-gcal
+    :defer t
+    :after org
+    :config
+    (setq org-gcal-client-id (who/get-file-contents "~/org/.org-gcal-client-id")
+          org-gcal-client-secret (who/get-file-contents "~/org/.org-gcal-client-secret")
+          org-gcal-fetch-file-alist '(("willy.ohanley@gmail.com" . "~/org/gtd/calendars/personal.org")
+                                      ("lmv5qq6jrpqbkgveladotgbgmg@group.calendar.google.com" . "~/org/gtd/calendars/class.org")))
+    (add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync)))
+    (add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync)))
+    :bind (:map org-mode-map
+                ("M-m m d S" . who/org-schedule-incl-gcal-at-point))))
+
 
 (defun who/org-noter-insert-highlighted-note ()
   "Highlight the active region and add a precise note at its position."
