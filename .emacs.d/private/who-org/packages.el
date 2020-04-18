@@ -43,8 +43,6 @@
 (defun who-org/post-init-org ()
   (require 'org-habit)
   (require 'org-protocol)
-  (require 'org-tempo)
-
   (add-to-list 'org-modules 'org-habit)
   (add-to-list 'org-modules 'org-protocol)
 
@@ -71,11 +69,8 @@
            'org-meta-line
            'org-document-info-keyword)))
 
-  ;; (add-hook 'org-mode-hook #'who/style-org)
-
-  (defun org-archive-done-tasks ()
-    (interactive)
-    (org-map-entries 'org-archive-subtree "/DONE" 'file)))
+  ;; (add-hook 'org-mode-hook #'who/style-org))
+  )
 
 (defun who-org/post-init-org-agenda ()
 
@@ -99,52 +94,13 @@
   (setq org-capture-templates
         `(("i" "inbox" entry (file ,(concat who/org-agenda-directory "inbox.org"))
            "* TODO %?")
+          ("a" "appointment" entry (file "~/org/gtd/calendars/personal.org" ))
           ("e" "email" entry (file+headline ,(concat who/org-agenda-directory "inbox.org") "Emails")
            "* TODO [#B] Reply: %a :@home:@school:" :immediate-finish t)
           ("l" "link" entry (file ,(concat who/org-agenda-directory "inbox.org"))
            "* TODO %(org-cliplink-capture)" :immediate-finish t)
           ("c" "org-protocol-capture" entry (file ,(concat who/org-agenda-directory "inbox.org"))
            "* TODO [[%:link][%:description]]\n\n %i" :immediate-finish t)))
-
-  (defun who/org-inbox-capture ()
-    (interactive)
-    "Capture a task in agenda mode."
-    (org-capture nil "i"))
-
-  (use-package org-download
-    :after org
-    :bind
-    (:map org-mode-map
-          (("s-Y" . org-download-screenshot)
-           ("s-y" . org-download-yank)))
-    :config
-    (if (memq window-system '(mac ns))
-        (setq org-download-screenshot-method "screencapture -i %s")
-      (setq org-download-screenshot-method "maim -s %s"))
-
-    (defun my-org-download-method (link)
-      "This is a helper function for org-download.
-It creates a folder in the root directory (~/.org/img/) named after the
-org filename (sans extension) and puts all images from that file in there.
-Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0bc532770e9533b4fc549438/init.el#L701"
-      (let ((filename
-             (file-name-nondirectory
-              (car (url-path-and-query
-                    (url-generic-parse-url link)))))
-            ;; Create folder name with current buffer name, and place in root dir
-            (dirname (concat "~/org/download/"
-                             (replace-regexp-in-string " " "_" (downcase (file-name-base buffer-file-name))))))
-
-        ;; Add timestamp to filename
-        (setq filename-with-timestamp (format "%s%s.%s"
-                                              (file-name-sans-extension filename)
-                                              (format-time-string org-download-timestamp)
-                                              (file-name-extension filename)))
-        ;; Create folder if necessary
-        (unless (file-exists-p dirname)
-          (make-directory dirname))
-        (expand-file-name filename-with-timestamp dirname)))
-    (setq org-download-method 'my-org-download-method))
 
   ;;;
   ;; org-agenda
@@ -167,74 +123,8 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
 
   (defvar who/org-current-effort "1:00" "Current effort for agenda items.")
 
-  (defun who/my-org-agenda-set-effort (effort)
-    "Set the effort property for the current headline."
-    (interactive
-     (list (read-string (format "Effort [%s]: " who/org-current-effort) nil nil who/org-current-effort)))
-    (setq who/org-current-effort effort)
-    (org-agenda-check-no-diary)
-    (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
-                         (org-agenda-error)))
-           (buffer (marker-buffer hdmarker))
-           (pos (marker-position hdmarker))
-           (inhibit-read-only t)
-           newhead)
-      (org-with-remote-undo buffer
-        (with-current-buffer buffer
-          (widen)
-          (goto-char pos)
-          (org-show-context 'agenda)
-          (funcall-interactively 'org-set-effort nil who/org-current-effort)
-          (end-of-line 1)
-          (setq newhead (org-get-heading)))
-        (org-agenda-change-all-lines newhead hdmarker))))
-
-  (defun who/org-agenda-process-inbox-item ()
-    "Process a single item in the org-agenda."
-    (interactive)
-    (org-with-wide-buffer
-     (org-agenda-set-tags)
-     (org-agenda-priority)
-     (call-interactively 'who/my-org-agenda-set-effort)
-     (org-agenda-refile nil nil t)))
-
-  (defun who/bulk-process-entries ()
-    (if (not (null org-agenda-bulk-marked-entries))
-        (let ((entries (reverse org-agenda-bulk-marked-entries))
-              (processed 0)
-              (skipped 0))
-          (dolist (e entries)
-            (let ((pos (text-property-any (point-min) (point-max) 'org-hd-marker e)))
-              (if (not pos)
-                  (progn (message "Skipping removed entry at %s" e)
-                         (cl-incf skipped))
-                (goto-char pos)
-                (let (org-loop-over-headlines-in-active-region) (funcall 'who/org-agenda-process-inbox-item))
-                ;; `post-command-hook' is not run yet.  We make sure any
-                ;; pending log note is processed.
-                (when (or (memq 'org-add-log-note (default-value 'post-command-hook))
-                          (memq 'org-add-log-note post-command-hook))
-                  (org-add-log-note))
-                (cl-incf processed))))
-          (org-agenda-redo)
-          (unless org-agenda-persistent-marks (org-agenda-bulk-unmark-all))
-          (message "Acted on %d entries%s%s"
-                   processed
-                   (if (= skipped 0)
-                       ""
-                     (format ", skipped %d (disappeared before their turn)"
-                             skipped))
-                   (if (not org-agenda-persistent-marks) "" " (kept marked)")))
-      ))
-
-  (defun who/org-process-inbox ()
-    "Called in org-agenda-mode, processes all inbox items."
-    (interactive)
-    (org-agenda-bulk-mark-regexp "inbox:")
-    (who/bulk-process-entries))
-
   ;;;
-  ;; org-agenda reading view
+  ;; reading view
   ;;;
 
   (setq who/org-agenda-reading-view
@@ -244,7 +134,7 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
   (add-to-list 'org-agenda-custom-commands `,who/org-agenda-reading-view)
 
   ;;;
-  ;; todo
+  ;; todo view
   ;;;
 
   (setq org-todo-keywords
@@ -275,7 +165,7 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
                                       ,(concat who/org-agenda-directory "projects")))
                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled)))
                  )
-           (todo "HOLD"
+           (todo "HOLD|WAITING"
                  ((org-agenda-overriding-header "Blocked")
                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled)))
                  )
@@ -288,10 +178,6 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
 
   (add-to-list 'org-agenda-custom-commands `,who/org-agenda-todo-view)
 
-  (defun who/switch-to-agenda ()
-    (interactive)
-    (org-agenda nil " "))
-
   ;;;
   ;; org-journal
   ;;;
@@ -300,10 +186,6 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
   (setq org-journal-date-prefix "#+TITLE: ")
   (setq org-journal-file-format "private-%Y-%m-%d.org")
   (setq org-journal-date-format "%Y-%m-%d")
-
-  (defun org-journal-today ()
-    (interactive)
-    (org-journal-new-entry t))
 
   ;;;
   ;; bindings
@@ -315,8 +197,7 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
               (define-key org-agenda-mode-map "o" 'org-agenda-clock-out)
               (define-key org-agenda-mode-map "s" 'who/org-agenda-process-inbox-item)
               (define-key org-agenda-mode-map "r" 'who/org-process-inbox)
-              (define-key org-agenda-mode-map "R" 'org-agenda-refile)
-              (define-key org-agenda-mode-map "c" 'who/org-inbox-capture)))
+              (define-key org-agenda-mode-map "R" 'org-agenda-refile)))
 
   (bind-key "<f1>" 'who/switch-to-agenda)
 
@@ -328,6 +209,7 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
 
 (defun who-org/init-org-clock-convenience ()
   (use-package org-clock-convenience
+    :defer t
     :bind (:map org-agenda-mode-map
                ("<S-up>" . org-clock-convenience-timestamp-up)
                ("<S-down>" . org-clock-convenience-timestamp-down)
@@ -336,21 +218,62 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
 
 (defun who-org/post-init-org-download ()
   (use-package org-download
+    :defer t
     :after org
-    :bind
-    (:map org-mode-map
-          (("s-Y" . org-download-screenshot)
-           ("s-y" . org-download-yank)))))
+    :init
+    (spacemacs/set-leader-keys-for-major-mode 'org-mode
+      "s-Y" 'org-download-screenshot
+      "s-y" 'org-download-yank)
+    :config
+    (if (memq window-system '(mac ns))
+        (setq org-download-screenshot-method "screencapture -i %s")
+      (setq org-download-screenshot-method "maim -s %s"))
+
+    (defun my-org-download-method (link)
+      "This is a helper function for org-download.
+It creates a folder in the root directory (~/.org/img/) named after the
+org filename (sans extension) and puts all images from that file in there.
+Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0bc532770e9533b4fc549438/init.el#L701"
+      (let ((filename
+             (file-name-nondirectory
+              (car (url-path-and-query
+                    (url-generic-parse-url link)))))
+            ;; Create folder name with current buffer name, and place in root dir
+            (dirname (concat "~/org/download/"
+                             (replace-regexp-in-string " " "_" (downcase (file-name-base buffer-file-name))))))
+
+        ;; Add timestamp to filename
+        (setq filename-with-timestamp (format "%s%s.%s"
+                                              (file-name-sans-extension filename)
+                                              (format-time-string org-download-timestamp)
+                                              (file-name-extension filename)))
+        ;; Create folder if necessary
+        (unless (file-exists-p dirname)
+          (make-directory dirname))
+        (expand-file-name filename-with-timestamp dirname)))
+    (setq org-download-method 'my-org-download-method)))
 
 (defun who-org/init-org-emms ()
   (add-to-list 'load-path "~/.emacs.d/private/who-org/extra/emms-5.3/lisp")
 
   (require 'emms-setup)
   (emms-all)
-  (emms-default-players)
+  ;; not sure why this doesn't work, but seeking is wildly inconsistent with the default players - vlc seems to work
+  ;; (emms-default-players)
+  (setq emms-player-list '(emms-player-vlc))
 
   (use-package org-emms
-    :config (setq org-emms-default-directory "~/org/library")))
+    :defer t
+    :config
+    (setq org-emms-default-directory "~/org/library")
+    (setq org-emms-delay 1)))
+
+(defun who/org-schedule-incl-gcal-at-point ()
+  "Schedule the org item at point and post it to gcal."
+  (interactive)
+  (org-schedule nil)
+  (org-entry-put (point) org-gcal-calendar-id-property "willy.ohanley@gmail.com")
+  (org-gcal-post-at-point))
 
 (defun who-org/init-org-gcal ()
 
