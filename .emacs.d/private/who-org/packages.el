@@ -272,7 +272,7 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
   "Schedule the org item at point and post it to gcal."
   (interactive)
   (org-schedule nil)
-  (org-entry-put (point) org-gcal-calendar-id-property "willy.ohanley@gmail.com")
+  (org-entry-put (point) "calendar-id" "willy.ohanley@gmail.com")
   (org-gcal-post-at-point))
 
 (defun who-org/init-org-gcal ()
@@ -295,7 +295,6 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
     (add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync)))
     :bind (:map org-mode-map
                 ("M-m m d S" . who/org-schedule-incl-gcal-at-point))))
-
 
 (defun who/org-noter-insert-highlighted-note ()
   "Highlight the active region and add a precise note at its position."
