@@ -46,6 +46,9 @@
   (add-to-list 'org-modules 'org-habit)
   (add-to-list 'org-modules 'org-protocol)
 
+  (require 'org-id)
+  (setq org-id-link-to-org-use-id t)
+
   (setq org-startup-folded 'showall)
   (setq org-return-follows-link t)
   (setq org-link-frame-setup '((file . find-file))) ;; follow links in same window
