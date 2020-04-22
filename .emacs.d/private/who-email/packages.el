@@ -94,6 +94,10 @@ Each entry is either:
     (add-to-list 'load-path "~/.emacs.d/private/who-email/extra")
     (require 'notmuch-calendar-x)
 
+    ;; check for text signalling that there should be an attachment
+    (setq notmuch-mua-attachment-regexp "\\(attach\\|\\bhere's\\b\\)")
+    (add-hook 'notmuch-mua-send-hook 'notmuch-mua-attachment-check)
+
     (defun who/org-capture-email ()
       (interactive)
       (org-capture nil "e"))
