@@ -294,8 +294,8 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
           org-gcal-client-secret (who/get-file-contents "~/org/.org-gcal-client-secret")
           org-gcal-fetch-file-alist '(("willy.ohanley@gmail.com" . "~/org/gtd/calendars/personal.org")
                                       ("lmv5qq6jrpqbkgveladotgbgmg@group.calendar.google.com" . "~/org/gtd/calendars/class.org")))
-    (add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync)))
-    (add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync)))
+    (add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync nil nil t)))
+    (add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync nil nil t)))
     :bind (:map org-mode-map
                 ("M-m m d S" . who/org-schedule-incl-gcal-at-point))))
 
