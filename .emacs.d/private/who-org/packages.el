@@ -32,7 +32,32 @@
 ;;; Code:
 
 (defconst who-org-packages
-  '(deft org org-agenda org-clock-convenience org-download org-emms org-gcal org-noter org-pdftools org-roam))
+  '(calfw calfw-org deft org org-agenda org-clock-convenience org-download org-emms org-gcal org-noter org-pdftools org-roam))
+
+(defun who-org/init-calfw ()
+  "Initialize calfw and add key-bindings"
+  (use-package calfw
+    :commands (cfw:open-calendar-buffer)
+    :init
+    (spacemacs/set-leader-keys "aCd" 'cfw:open-calendar-buffer)
+    :config
+    (progn
+      (define-key cfw:calendar-mode-map (kbd "TAB") 'cfw:show-details-command)
+      (define-key cfw:calendar-mode-map (kbd "C-j") 'cfw:navi-next-item-command)
+      (define-key cfw:calendar-mode-map (kbd "C-k") 'cfw:navi-prev-item-command))))
+
+(defun who-org/init-calfw-org ()
+  "Initialize calfw-org and add key-bindings"
+  (use-package calfw-org
+
+    :commands (cfw:open-org-calendar)
+    :init
+    (spacemacs/set-leader-keys "aoCd" 'cfw:open-org-calendar)
+    :config
+    (progn
+      (define-key cfw:org-schedule-map (kbd "TAB") 'cfw:org-open-agenda-day)
+      (define-key cfw:org-custom-map (kbd "SPC") 'spacemacs-cmds)
+      (define-key cfw:org-custom-map (kbd "TAB") 'cfw:org-open-agenda-day))))
 
 (defun who-org/post-init-deft ()
   (setq deft-recursive 1)
