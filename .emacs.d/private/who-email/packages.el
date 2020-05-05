@@ -30,7 +30,7 @@
 ;;; Code:
 
 (defconst who-email-packages
-  '(notmuch)
+  '(notmuch (notmuch-calendar-x :location local))
   "The list of Lisp packages required by the who-email layer.
 
 Each entry is either:
@@ -91,9 +91,6 @@ Each entry is either:
            ("c" . who/org-capture-email))
 
     :config
-    (add-to-list 'load-path "~/.emacs.d/private/who-email/extra")
-    (require 'notmuch-calendar-x)
-
     ;; check for text signalling that there should be an attachment
     (setq notmuch-mua-attachment-regexp "\\(attach\\|\\bhere's\\b\\)")
     (add-hook 'notmuch-mua-send-hook 'notmuch-mua-attachment-check)
@@ -148,8 +145,7 @@ Each entry is either:
       (interactive)
       (spam-start-process (notmuch-search-find-thread-id))
       (notmuch-search-tag (list "+spam" "-maybe-spam" "-inbox"))
-      (notmuch-search-next-thread)
-)
+      (notmuch-search-next-thread))
 
     ;;;
     ;; notmuch-tree
@@ -232,4 +228,12 @@ timestamp."
                               (:name "unread" :query "tag:inbox and tag:unread" :key "u")
                               (:name "spam" :query "tag:spam" :key "s")
                               (:name "drafts" :query "tag:draft" :key "d")))))
+
+(defun who-email/init-notmuch-calendar-x ()
+  (use-package notmuch-calendar-x
+    :after notmuch
+    :config
+    (setq notmuch-calendar-capture-target '("~/org/gtd/calendars/personal.org"))
+    (setq notmuch-calendar-default-tags '())))
+
 ;;; packages.el ends here
