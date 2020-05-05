@@ -75,6 +75,7 @@
   (setq org-id-link-to-org-use-id t)
 
   (setq org-startup-folded 'showall)
+  (setq org-list-indent-offset 2)
   (setq org-return-follows-link t)
   (setq org-link-frame-setup '((file . find-file))) ;; follow links in same window
   (setq org-agenda-diary-file "~/org/diary.org")
@@ -291,7 +292,7 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
   (setq emms-player-list '(emms-player-vlc))
 
   (use-package org-emms
-    :defer t
+    :after org
     :config
     (setq org-emms-default-directory "~/org/library")
     (setq org-emms-delay 1)))
@@ -312,7 +313,6 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
       (buffer-string)))
 
   (use-package org-gcal
-    :defer t
     :after org
     :config
     (setq org-gcal-client-id (who/get-file-contents "~/org/.org-gcal-client-id")
@@ -342,10 +342,9 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
 
 (defun who-org/init-org-pdftools ()
   (use-package org-pdftools
+    :hook (org-load . org-pdftools-setup-link)
     :config
     (setq org-pdftools-root-dir "~/org/library")
-    (add-hook 'org-load-hook 'org-pdftools-setup-link)
-    (add-hook 'org-store-link-functions 'org-pdftools-store-link)
     (setq org-pdftools-markup-pointer-color "#FFFF00")))
 
 ;; org-pdftools and org-noter integration doesn't seem to work very well right now. maybe check back later, development seems active
