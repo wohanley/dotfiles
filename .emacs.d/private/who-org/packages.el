@@ -102,7 +102,6 @@
   )
 
 (defun who-org/post-init-org-agenda ()
-
   (setq who/org-agenda-directory "~/org/gtd/")
 
   (require 'find-lisp)
@@ -354,9 +353,14 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
 ;;     (with-eval-after-load 'pdf-annot
 ;;       (add-hook 'pdf-annot-activate-handler-functions 'org-noter-jump-to-note))))
 
+(defun who-org/org-roam-persons ()
+  (hash-table-keys (gethash (expand-file-name "~/org/zettelkasten/20200508124326_person.org") (org-roam--backward-links-cache))))
+
 (defun who-org/post-init-org-roam ()
   (setq org-roam-directory "~/org/zettelkasten")
   (setq org-roam-buffer-width 0.3)
 
   ;; build cache in background
-  (add-hook 'org-roam-mode-hook 'org-roam--build-cache-async))
+  (add-hook 'org-roam-mode-hook 'org-roam--build-cache-async)
+
+  (setq org-contacts-files (who-org/org-roam-persons)))
