@@ -30,7 +30,7 @@
 ;;; Code:
 
 (defconst who-email-packages
-  '(notmuch (notmuch-calendar-x :location local))
+  '(org notmuch (notmuch-calendar-x :location local))
   "The list of Lisp packages required by the who-email layer.
 
 Each entry is either:
@@ -57,6 +57,9 @@ Each entry is either:
 
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
+
+(defun who-email/post-init-org ()
+  (require 'ol-notmuch))
 
 (defun who-email/init-notmuch ()
   (use-package notmuch
@@ -91,8 +94,10 @@ Each entry is either:
            ("c" . who/org-capture-email))
 
     :config
+    (setq notmuch-identities '("me@wohanley.com" "whohanley@uvic.ca" "willy.ohanley@gmail.com"))
+
     ;; check for text signalling that there should be an attachment
-    (setq notmuch-mua-attachment-regexp "\\(attach\\|\\bhere's\\b\\)")
+    (setq notmuch-mua-attachment-regexp "\\(attach\\|\\bhere\\b\\)")
     (add-hook 'notmuch-mua-send-hook 'notmuch-mua-attachment-check)
 
     (defun who/org-capture-email ()
