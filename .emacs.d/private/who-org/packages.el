@@ -49,7 +49,6 @@
 (defun who-org/init-calfw-org ()
   "Initialize calfw-org and add key-bindings"
   (use-package calfw-org
-
     :commands (cfw:open-org-calendar)
     :init
     (spacemacs/set-leader-keys "aoCd" 'cfw:open-org-calendar)
@@ -70,6 +69,10 @@
   (require 'org-protocol)
   (add-to-list 'org-modules 'org-habit)
   (add-to-list 'org-modules 'org-protocol)
+
+  (require 'org-contacts)
+  (add-to-list 'org-modules 'org-contacts)
+  (setq org-contacts-files '("~/org/contacts.org"))
 
   (require 'org-id)
   (setq org-id-link-to-org-use-id t)
@@ -108,8 +111,7 @@
   (defun who/find-org-files (directory)
     (find-lisp-find-files directory "\.org$"))
 
-  (setq org-agenda-files
-         (who/find-org-files who/org-agenda-directory))
+  (setq org-agenda-files (who/find-org-files who/org-agenda-directory))
 
   (setq org-log-done 'time
         org-log-into-drawer t
@@ -318,7 +320,7 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
           org-gcal-client-secret (who/get-file-contents "~/org/.org-gcal-client-secret")
           org-gcal-fetch-file-alist '(("willy.ohanley@gmail.com" . "~/org/gtd/calendars/personal.org")
                                       ("lmv5qq6jrpqbkgveladotgbgmg@group.calendar.google.com" . "~/org/gtd/calendars/class.org")))
-    (add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync nil nil t)))
+    (add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync nil t t)))
     (add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync nil nil t)))
     :bind (:map org-mode-map
                 ("M-m m d S" . who/org-schedule-incl-gcal-at-point))))
@@ -353,14 +355,9 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
 ;;     (with-eval-after-load 'pdf-annot
 ;;       (add-hook 'pdf-annot-activate-handler-functions 'org-noter-jump-to-note))))
 
-(defun who-org/org-roam-persons ()
-  (hash-table-keys (gethash (expand-file-name "~/org/zettelkasten/20200508124326_person.org") (org-roam--backward-links-cache))))
-
 (defun who-org/post-init-org-roam ()
   (setq org-roam-directory "~/org/zettelkasten")
-  (setq org-roam-buffer-width 0.3)
+  (setq org-roam-buffer-width 0.25)
 
   ;; build cache in background
-  (add-hook 'org-roam-mode-hook 'org-roam--build-cache-async)
-
-  (setq org-contacts-files (who-org/org-roam-persons)))
+  (add-hook 'org-roam-mode-hook 'org-roam--build-cache-async))
