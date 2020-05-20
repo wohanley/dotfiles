@@ -361,4 +361,11 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
   (setq org-roam-buffer-width 0.25)
 
   ;; build cache in background
-  (add-hook 'org-roam-mode-hook 'org-roam--build-cache-async))
+  (add-hook 'org-roam-mode-hook 'org-roam--build-cache-async)
+
+  ;; show backlinks on opening zettel
+  (add-hook 'find-file-hook #'who-org/show-backlinks)
+  (defun who-org/show-backlinks ()
+    (when (and (not (get-buffer-window org-roam-buffer))
+               (f-descendant-of? buffer-file-name (f-join (getenv "HOME") "org/zettelkasten")))
+      (org-roam))))
