@@ -102,7 +102,8 @@
            'org-document-info-keyword)))
 
   ;; (add-hook 'org-mode-hook #'who/style-org))
-  )
+
+  (spacemacs/set-leader-keys-for-major-mode 'org-mode "ir" 'who/org-insert-link-to-latest))
 
 (defun who-org/post-init-org-agenda ()
   (setq who/org-agenda-directory "~/org/gtd/")

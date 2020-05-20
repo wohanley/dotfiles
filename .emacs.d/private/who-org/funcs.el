@@ -1,3 +1,16 @@
+(defun who/mtime (file) (let ((attrs (file-attributes file))) (nth 5 attrs)))
+
+(defun who/latest-file (path)
+  (let ((e (f-entries path)))
+    (car (sort e (lambda (a b)
+                   (not (time-less-p (who/mtime a)
+                                     (who/mtime b))))))))
+
+(defun who/org-insert-link-to-latest ()
+  (interactive)
+  (let ((file (who/latest-file "~/org/library")))
+    (funcall-interactively 'org-insert-link nil file (f-filename file))))
+
 ;;;
 ;; org-agenda
 ;;;
