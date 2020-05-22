@@ -32,7 +32,7 @@
 ;;; Code:
 
 (defconst who-org-packages
-  '(calfw calfw-org deft org org-agenda org-clock-convenience org-download org-emms org-gcal org-noter org-pdftools org-roam))
+  '(calfw calfw-org deft org org-agenda org-alert org-clock-convenience org-download org-emms org-gcal org-noter org-pdftools org-roam))
 
 (defun who-org/init-calfw ()
   "Initialize calfw and add key-bindings"
@@ -237,6 +237,12 @@
   (setq org-agenda-bulk-custom-functions `((,who/org-agenda-bulk-process-key who/org-agenda-process-inbox-item)))
 
   (add-hook 'org-clock-in-hook 'who/set-todo-state-next 'append))
+
+(defun who-org/init-org-alert ()
+  (use-package org-alert
+    :after org-agenda
+    :hook (org-mode . org-alert-enable)
+    :custom (alert-default-style 'libnotify)))
 
 (defun who-org/init-org-clock-convenience ()
   (use-package org-clock-convenience
