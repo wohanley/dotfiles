@@ -76,6 +76,7 @@ Each entry is either:
            ("a" . notmuch-search-archive-thread)
            ("h" . who/notmuch-search-ham)
            ("H" . who/notmuch-search-spam)
+           ("c" . who/org-capture-email)
            ("r" . notmuch-search-reply-to-thread)
            ("R" . notmuch-search-reply-to-thread-sender)
            :map notmuch-tree-mode-map
@@ -83,6 +84,7 @@ Each entry is either:
            ("h" . who/notmuch-tree-ham)
            ("H" . who/notmuch-tree-spam)
            ("y" . who/notmuch-tree-toggle-unread)
+           ("c" . who/org-capture-email)
            ;; ("r" . notmuch-tree-reply-to-thread)
            ;; ("R" . notmuch-tree-reply-to-thread-sender)
            :map notmuch-show-mode-map
