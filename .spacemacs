@@ -36,7 +36,7 @@ This function should only modify configuration layer settings."
      bibtex
      clojure
      csv
-     deft
+     ;; deft
      ;; elixir
      emacs-lisp
      git
@@ -48,6 +48,7 @@ This function should only modify configuration layer settings."
      html
      ivy
      markdown
+     notdeft
      org
      org-roam
      python
@@ -231,8 +232,8 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-colorize-cursor-according-to-state t
 
    ;; Default font or prioritized list of fonts.
-   dotspacemacs-default-font '("Source Code Pro"
-                               :size 13
+   dotspacemacs-default-font '("Iosevka"
+                               :size 14
                                :weight normal
                                :width normal)
                                ;; :powerline-scale 1.1)
@@ -385,7 +386,9 @@ It should only modify the values of Spacemacs settings."
    ;;   :size-limit-kb 1000)
    ;; When used in a plist, `visual' takes precedence over `relative'.
    ;; (default nil)
-   dotspacemacs-line-numbers t
+   dotspacemacs-line-numbers '(:relative nil
+                               :visual nil
+                               :disabled-for-modes org-roam-backlinks-mode)
 
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
@@ -487,6 +490,17 @@ This function is called only while dumping Spacemacs configuration. You can
 dump."
   )
 
+(defun who/kill-current-buffer (arg)
+  "Kill the current buffer. Save modifications first unless prefix argument passed."
+  (interactive "P")
+  (if (and (buffer-file-name) (buffer-modified-p) (not arg)) (save-buffer))
+  (kill-buffer (current-buffer)))
+
+(defun who/save-buffers-kill-frame ()
+  (interactive)
+  (save-some-buffers)
+  (spacemacs/frame-killer))
+
 (defun who/undo-kill-buffer (arg)
   "Re-open the last buffer killed.  With ARG, re-open the nth buffer. See
 http://emacs.stackexchange.com/questions/3330/how-to-reopen-just-killed-buffer-like-c-s-t-in-firefox-browser"
@@ -543,6 +557,13 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
+  ;; (setenv "TZ" "Canada/Pacific")
+
+  (setq mail-host-address "wohanley.com")
+  (add-hook 'message-mode-hook #'turn-off-auto-fill)
+
+  (setq epa-pinentry-mode 'loopback)
+  ;; (pinentry-start)
   (add-hook 'text-mode-hook 'spacemacs/toggle-visual-line-navigation-on)
 
   ;; kill frame but keep daemon running per https://medium.com/@bobbypriambodo/blazingly-fast-spacemacs-with-persistent-server-92260f2118b7
@@ -597,8 +618,10 @@ before packages are loaded."
   (remove-hook 'anaconda-mode-response-read-fail-hook
                'anaconda-mode-show-unreadable-response)
   ;; so "# -*- coding: utf8 -*-" works
-  (define-coding-system-alias 'utf8 'utf-8))
+  (define-coding-system-alias 'utf8 'utf-8)
 
+  ;; PDFs open too small without this
+  (add-hook 'pdf-view-mode-hook 'pdf-view-fit-width-to-window))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -686,15 +709,37 @@ This function is called at the very end of Spacemacs initialization."
  '(js-indent-level 2)
  '(js2-mode-show-parse-errors nil)
  '(js2-mode-show-strict-warnings nil)
- '(org-bullets-bullet-list (quote ("◉" "○")))
- '(org-ref-bibliography-notes "~/think/bibliography/notes.org")
+ '(mail-envelope-from (quote header))
+ '(mail-specify-envelope-from t)
+ '(message-auto-save-directory "~/.mail/drafts/")
+ '(message-kill-buffer-on-exit t)
+ '(message-send-mail-function (quote message-send-mail-with-sendmail))
+ '(message-sendmail-envelope-from (quote header))
+ '(message-sendmail-f-is-evil nil)
+ '(notdeft-directories (quote ("~/org/zettelkasten")))
+ '(notmuch-always-prompt-for-sender t t)
+ '(notmuch-archive-tags (quote ("+archived" "-inbox" "-unread")) t)
+ '(notmuch-crypto-process-mime t t)
+ '(notmuch-fcc-dirs
+   (quote
+    ((".*@wohanley.com" . "me/Sent")
+     ("willy.ohanley@gmail.com" . "gmail/Sent")
+     ("whohanley@uvic.ca" . "uvic/Sent"))) t)
+ '(notmuch-hello-sections (quote (notmuch-hello-insert-saved-searches)) t)
+ '(notmuch-message-headers (quote ("To" "Cc" "Subject" "Bcc")) t)
+ '(notmuch-saved-searches
+   (quote
+    ((:name "inbox" :query "tag:inbox" :key "j" :search-type tree)
+     (:name "unread" :query "tag:inbox and tag:unread" :key "u")
+     (:name "spam" :query "tag:spam" :key "s")
+     (:name "drafts" :query "tag:draft" :key "d"))) t)
+ '(notmuch-search-oldest-first nil t)
  '(org-ref-completion-library (quote org-ref-ivy-cite))
- '(org-ref-default-bibliography "~/think/bibliography/references.bib")
- '(org-ref-pdf-directory (quote ("\"~/think/bibliography/pdfs/\"")))
- '(org-roam-mode t nil (org-roam))
+ '(org-roam-directory "~/org/zettelkasten")
  '(package-selected-packages
    (quote
-    (org-gcal request-deferred org-clock-convenience org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download htmlize gnuplot org-roam winum git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter fuzzy transient reformatter diff-hl clojure-snippets clj-refactor inflections paredit lv cider-eval-sexp-fu cider sesman queue parseedn clojure-mode parseclj a gh-md mmm-mode markdown-toc markdown-mode smeargle orgit org magit-gitflow gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit magit-popup git-commit with-editor insert-shebang fish-mode company-shell rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby csv-mode helm-themes helm-swoop helm-projectile helm-mode-manager helm-flx helm-descbinds helm-ag ace-jump-helm-line dtrt-indent yaml-mode company-web web-completion-data company-tern dash-functional company-statistics company-go company-anaconda company auto-yasnippet ac-ispell auto-complete web-mode web-beautify tern tagedit slim-mode scss-mode sass-mode pug-mode livid-mode skewer-mode simple-httpd less-css-mode json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc haml-mode emmet-mode coffee-mode sql-indent flycheck-gometalinter go-guru go-eldoc go-mode flycheck-elm elm-mode flycheck-pos-tip pos-tip flycheck yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode cython-mode anaconda-mode pythonic reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler window-numbering which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump popup f s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash async aggressive-indent adaptive-wrap ace-window ace-link avy quelpa package-build spacemacs-theme)))
+    (calfw-org calfw org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download htmlize gnuplot org-roam winum git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter fuzzy transient reformatter diff-hl clojure-snippets clj-refactor inflections paredit lv cider-eval-sexp-fu cider sesman queue parseedn clojure-mode parseclj a gh-md mmm-mode markdown-toc markdown-mode smeargle orgit org magit-gitflow gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit magit-popup git-commit with-editor insert-shebang fish-mode company-shell rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby csv-mode helm-themes helm-swoop helm-projectile helm-mode-manager helm-flx helm-descbinds helm-ag ace-jump-helm-line dtrt-indent yaml-mode company-web web-completion-data company-tern dash-functional company-statistics company-go company-anaconda company auto-yasnippet ac-ispell auto-complete web-mode web-beautify tern tagedit slim-mode scss-mode sass-mode pug-mode livid-mode skewer-mode simple-httpd less-css-mode json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc haml-mode emmet-mode coffee-mode sql-indent flycheck-gometalinter go-guru go-eldoc go-mode flycheck-elm elm-mode flycheck-pos-tip pos-tip flycheck yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode cython-mode anaconda-mode pythonic reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler window-numbering which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump popup f s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash async aggressive-indent adaptive-wrap ace-window ace-link avy quelpa package-build spacemacs-theme)))
+ '(sendmail-program "/home/wohanley/.nix-profile/bin/msmtp")
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote
