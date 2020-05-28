@@ -592,6 +592,8 @@ before packages are loaded."
   (global-set-key (kbd "C-s-<left>") 'sp-backward-slurp-sexp)
   (global-set-key (kbd "C-S-s-<right>") 'sp-forward-barf-sexp)
   (global-set-key (kbd "C-S-s-<left>") 'sp-backward-barf-sexp)
+  ;; save and kill current buffer
+  (global-set-key (kbd "C-x k") 'who/kill-current-buffer)
   ;; undo kill buffer web browser style
   (global-set-key (kbd "C-S-t") 'who/undo-kill-buffer)
   ;; magit
@@ -619,7 +621,6 @@ before packages are loaded."
                'anaconda-mode-show-unreadable-response)
   ;; so "# -*- coding: utf8 -*-" works
   (define-coding-system-alias 'utf8 'utf-8)
-
   ;; PDFs open too small without this
   (add-hook 'pdf-view-mode-hook 'pdf-view-fit-width-to-window))
 
