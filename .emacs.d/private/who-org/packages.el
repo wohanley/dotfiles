@@ -72,7 +72,7 @@
 
   (require 'org-contacts)
   (add-to-list 'org-modules 'org-contacts)
-  (setq org-contacts-files '("~/org/contacts.org"))
+  (setq org-contacts-files (notdeft-list-files-by-query "!all tag:person"))
 
   (require 'org-id)
   (setq org-id-link-to-org-use-id t)
@@ -105,6 +105,12 @@
 
   (spacemacs/set-leader-keys-for-major-mode 'org-mode "ir" 'who/org-insert-link-to-latest))
 
+(defun who-org/find-projects ()
+  (notdeft-list-files-by-query "!all tag:project AND NOT tag:archive"))
+
+(defun who-org/find-areas-of-responsibility ()
+  (notdeft-list-files-by-query "!all tag:AoR AND NOT tag:archive"))
+
 (defun who-org/post-init-org-agenda ()
   (setq who/org-agenda-directory "~/org/gtd/")
 
@@ -112,7 +118,8 @@
   (defun who/find-org-files (directory)
     (find-lisp-find-files directory "\.org$"))
 
-  (setq org-agenda-files (who/find-org-files who/org-agenda-directory))
+  (setq org-agenda-files (append (who/find-org-files who/org-agenda-directory)
+                                 (who-org/find-projects)))
 
   (setq org-log-done 'time
         org-log-into-drawer t
@@ -145,12 +152,11 @@
   (setq org-refile-use-outline-path 'file
         org-outline-path-complete-in-steps nil)
   (setq org-refile-allow-creating-parent-nodes 'confirm)
-  (defun who/org-agenda-project-files ()
-     (who/find-org-files (concat who/org-agenda-directory "projects")))
   (setq org-refile-targets '(("next.org" :level . 0)
                              ("someday.org" :level . 0)
                              ("reading.org" :level . 1)
-                             (who/org-agenda-project-files :level . 0)))
+                             (who-org/find-projects :level . 0)
+                             (who-org/find-areas-of-responsibility :level . 0)))
 
   (defvar who/org-current-effort "1:00" "Current effort for agenda items.")
 
