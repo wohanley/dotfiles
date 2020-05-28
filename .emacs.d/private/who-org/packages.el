@@ -42,6 +42,7 @@
     (spacemacs/set-leader-keys "aCd" 'cfw:open-calendar-buffer)
     :config
     (progn
+      (setq calendar-week-start-day 1) ;; start week on Monday
       (define-key cfw:calendar-mode-map (kbd "TAB") 'cfw:show-details-command)
       (define-key cfw:calendar-mode-map (kbd "C-j") 'cfw:navi-next-item-command)
       (define-key cfw:calendar-mode-map (kbd "C-k") 'cfw:navi-prev-item-command))))
@@ -134,7 +135,7 @@
            "* TODO %?")
           ("a" "appointment" entry (file "~/org/gtd/calendars/personal.org" ))
           ("e" "email" entry (file+headline ,(concat who/org-agenda-directory "inbox.org") "Emails")
-           "* TODO [#B] Reply: %a :@home:@school:" :immediate-finish t)
+           "* TODO [#B] %a" :immediate-finish t)
           ("l" "link" entry (file ,(concat who/org-agenda-directory "inbox.org"))
            "* TODO %(org-cliplink-capture)" :immediate-finish t)
           ("c" "org-protocol-capture" entry (file ,(concat who/org-agenda-directory "inbox.org"))
@@ -189,28 +190,23 @@
                     (org-deadline-warning-days 30)))
            (todo "NEXT"
                  ((org-agenda-overriding-header "In Progress")
-                  (org-agenda-files '(,(concat who/org-agenda-directory "someday.org")
-                                      ,(concat who/org-agenda-directory "projects")
-                                      ,(concat who/org-agenda-directory "next.org")))
-                  ))
+                  (org-agenda-files (append '(,(concat who/org-agenda-directory "someday.org")
+                                              ,(concat who/org-agenda-directory "next.org"))
+                                            (who-org/find-projects)))))
            (todo "TODO"
                  ((org-agenda-overriding-header "To Refile")
                   (org-agenda-files '(,(concat who/org-agenda-directory "inbox.org")))))
            (todo "TODO"
                  ((org-agenda-overriding-header "Backlog")
-                  (org-agenda-files '(,(concat who/org-agenda-directory "next.org")
-                                      ,(concat who/org-agenda-directory "projects")))
-                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled)))
-                 )
+                  (org-agenda-files (append '(,(concat who/org-agenda-directory "next.org"))
+                                            (who-org/find-projects)))
+                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp))))
            (todo "HOLD|WAITING"
-                 ((org-agenda-overriding-header "Blocked")
-                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled)))
-                 )
+                 ((org-agenda-overriding-header "Blocked")))
            (todo "TODO"
                  ((org-agenda-overriding-header "Someday")
                   (org-agenda-files '(,(concat who/org-agenda-directory "someday.org")))
-                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled)))
-                 ))
+                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp)))))
            nil))
 
   (add-to-list 'org-agenda-custom-commands `,who/org-agenda-todo-view)
@@ -221,7 +217,7 @@
 
   (setq org-journal-dir "~/org/zettelkasten")
   (setq org-journal-date-prefix "#+TITLE: ")
-  (setq org-journal-file-format "private-%Y-%m-%d.org")
+  (setq org-journal-file-format "journal-%Y-%m-%d.org")
   (setq org-journal-date-format "%Y-%m-%d")
 
   ;;;
@@ -369,8 +365,10 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
   ;; build cache in background
   (add-hook 'org-roam-mode-hook 'org-roam--build-cache-async)
 
-  ;; show backlinks on opening zettel
-  (add-hook 'find-file-hook #'who-org/show-backlinks)
+  ;; show backlinks on opening zettel. not doing this right now because it has a
+  ;; lot of weird knock-on effects. maybe there's a more stable way to do it
+  ;; (add-hook 'find-file-hook #'who-org/show-backlinks)
+
   (defun who-org/show-backlinks ()
     (when (and (not (get-buffer-window org-roam-buffer))
                (f-descendant-of? buffer-file-name (f-join (getenv "HOME") "org/zettelkasten")))
