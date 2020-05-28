@@ -93,10 +93,19 @@ Each entry is either:
            ("<tab>" . org-next-link)
            ("<backtab>". org-previous-link)
            ("C-<return>" . browse-url-at-point)
-           ("c" . who/org-capture-email))
+           ("c" . who/org-capture-email)
+           ("f" . who/notmuch-show-forward-inline)
+           ("F" . notmuch-show-forward-message))
 
     :config
     (setq notmuch-identities '("me@wohanley.com" "whohanley@uvic.ca" "willy.ohanley@gmail.com"))
+
+    ;; inline seems less weird. still not really sure how attachment vs inline forwarding works
+    (defun who/notmuch-show-forward-inline (prefix)
+      (interactive "P")
+      (let ((message-forward-as-mime nil)
+            (message-forward-ignored-headers ".*"))
+        (notmuch-show-forward-message prefix)))
 
     ;; check for text signalling that there should be an attachment
     (setq notmuch-mua-attachment-regexp "\\(attach\\|\\bhere\\b\\)")
