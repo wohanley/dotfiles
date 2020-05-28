@@ -32,7 +32,7 @@
 ;;; Code:
 
 (defconst who-org-packages
-  '(calfw calfw-org deft org org-agenda org-alert org-clock-convenience org-download org-emms org-gcal org-noter org-pdftools org-roam))
+  '(calfw calfw-org deft org org-agenda org-clock-convenience org-download org-emms org-gcal org-noter org-pdftools org-roam org-wild-notifier))
 
 (defun who-org/init-calfw ()
   "Initialize calfw and add key-bindings"
@@ -244,12 +244,6 @@
 
   (add-hook 'org-clock-in-hook 'who/set-todo-state-next 'append))
 
-(defun who-org/init-org-alert ()
-  (use-package org-alert
-    :after org-agenda
-    :hook (org-mode . org-alert-enable)
-    :custom (alert-default-style 'libnotify)))
-
 (defun who-org/init-org-clock-convenience ()
   (use-package org-clock-convenience
     :defer t
@@ -381,3 +375,7 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
     (when (and (not (get-buffer-window org-roam-buffer))
                (f-descendant-of? buffer-file-name (f-join (getenv "HOME") "org/zettelkasten")))
       (org-roam))))
+
+(defun who-org/init-org-wild-notifier ()
+  (use-package org-wild-notifier
+    :hook (after-init . org-wild-notifier-mode)))
