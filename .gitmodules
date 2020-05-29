@@ -1,0 +1,3 @@
+[submodule ".emacs.d/private/notdeft/local/notdeft"]
+	path = .emacs.d/private/notdeft/local/notdeft
+	url = git@github.com:wohanley/notdeft.git
