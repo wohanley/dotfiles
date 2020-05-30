@@ -148,6 +148,8 @@
   (setq org-agenda-block-separator nil)
   (setq org-agenda-start-with-log-mode t)
   (setq org-columns-default-format "%40ITEM(Task) %Effort(EE){:} %CLOCKSUM(Time Spent) %SCHEDULED(Scheduled) %DEADLINE(Deadline)")
+  (setq org-agenda-window-setup 'current-window)
+  (setq org-agenda-restore-windows-after-quit nil)
 
   ;; https://github.com/syl20bnr/spacemacs/issues/3094
   (setq org-refile-use-outline-path 'file
