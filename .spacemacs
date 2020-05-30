@@ -51,17 +51,23 @@ This function should only modify configuration layer settings."
      notdeft
      org
      org-roam
+     pdf
      python
      react
      ruby
      shell-scripts
+     (spell-checking :variables
+                     spell-checking-enable-by-default nil)
      sql
      syntax-checking
      systemd
      version-control
+     who-dired
+     who-email
+     who-nix
+     who-org
      yaml
      zotxt
-     who-org
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
@@ -74,7 +80,6 @@ This function should only modify configuration layer settings."
      ;; (shell :variables
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
-     ;; spell-checking
      ;; treemacs
      )
 
@@ -564,11 +569,17 @@ before packages are loaded."
 
   (setq epa-pinentry-mode 'loopback)
   ;; (pinentry-start)
+
   (add-hook 'text-mode-hook 'spacemacs/toggle-visual-line-navigation-on)
 
+  ;; flash the frame to represent a bell
+  (setq visible-bell t)
+
   ;; kill frame but keep daemon running per https://medium.com/@bobbypriambodo/blazingly-fast-spacemacs-with-persistent-server-92260f2118b7
-  (spacemacs/set-leader-keys "q q" 'spacemacs/frame-killer)
-  (spacemacs/set-leader-keys "q Q" 'spacemacs/prompt-kill-emacs)
+  (spacemacs/set-leader-keys
+    "q q" 'spacemacs/prompt-kill-emacs
+    "q f" 'who/save-buffers-kill-frame
+    "q F" 'spacemacs/frame-killer)
 
   ;; don't look for completions on tab
   (setq tab-always-indent t)
@@ -592,7 +603,7 @@ before packages are loaded."
   (global-set-key (kbd "C-s-<left>") 'sp-backward-slurp-sexp)
   (global-set-key (kbd "C-S-s-<right>") 'sp-forward-barf-sexp)
   (global-set-key (kbd "C-S-s-<left>") 'sp-backward-barf-sexp)
-  ;; save and kill current buffer
+  ;; save and kill current buffer (rebound from kill-buffer)
   (global-set-key (kbd "C-x k") 'who/kill-current-buffer)
   ;; undo kill buffer web browser style
   (global-set-key (kbd "C-S-t") 'who/undo-kill-buffer)
