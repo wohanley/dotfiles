@@ -192,14 +192,16 @@
                  ((org-agenda-overriding-header "In Progress")
                   (org-agenda-files (append '(,(concat who/org-agenda-directory "someday.org")
                                               ,(concat who/org-agenda-directory "next.org"))
-                                            (who-org/find-projects)))))
+                                            (who-org/find-projects)
+                                            (who-org/find-areas-of-responsibility)))))
            (todo "TODO"
                  ((org-agenda-overriding-header "To Refile")
                   (org-agenda-files '(,(concat who/org-agenda-directory "inbox.org")))))
            (todo "TODO"
                  ((org-agenda-overriding-header "Backlog")
                   (org-agenda-files (append '(,(concat who/org-agenda-directory "next.org"))
-                                            (who-org/find-projects)))
+                                            (who-org/find-projects)
+                                            (who-org/find-areas-of-responsibility)))
                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp))))
            (todo "HOLD|WAITING"
                  ((org-agenda-overriding-header "Blocked")))
