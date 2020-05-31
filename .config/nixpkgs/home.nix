@@ -50,7 +50,7 @@ in {
       userName = "me@wohanley.com";
       passwordCommand = "${pkgs.pass}/bin/pass email/me";
       realName = "William O'Hanley";
-      imap.host = "valerie.asoshared.com";
+      imap.host = "mail.wohanley.com";
       mbsync = {
         enable = true;
         create = "both";
@@ -59,15 +59,15 @@ in {
       };
       goimapnotify = {
         enable = true;
-        # Not notifying on spam because I think it brings me up against ASO's
-        # user+IP connection limit. mbsync will still pick them up
-        boxes = [ "INBOX" "INBOX.Drafts" "INBOX.Sent" ];
+        boxes = [ "INBOX" "Drafts" "Junk" "Sent" ];
         onNewMail = "${scripts}/mail/on-new-mail.sh me";
       };
-      smtp.host = "valerie.asoshared.com";
-      msmtp = {
-        enable = true;
+      smtp = {
+        host = "mail.wohanley.com";
+        port = 587;
+        tls.useStartTls = true;
       };
+      msmtp.enable = true;
       notmuch.enable = true;
     };
     accounts.uvic = {
@@ -132,11 +132,16 @@ in {
     # figure out how to make the shared lib available to python if it's
     # installed through nix
     enable = true;
-    extraConfig.headers.index = ''
-      headers.XBogosity=X-Bogosity
-      headers.XSpamFlag=X-Spam-Flag
-    '';
     new.tags = [ "new" ];
+    # this doesn't actually work, needs to be added to the DB but the config set
+    # command fails because notmuchrc is unwritable. also not sure this is the
+    # right format anyway
+    extraConfig = {
+      headers = {
+        XSpamFlag = "X-Spam-Flag";
+        XBogosity = "X-Bogosity";
+      };
+    };
     hooks.postNew = ''
       # Apply initial tags (sent, notify, etc)
       ${pkgs.notmuch}/bin/notmuch tag --input ${scripts}/mail/notmuch-post-new-tags
