@@ -351,10 +351,7 @@ if [[ `uname -s` == 'Darwin' ]] {
   alias ls='ls --color'
 }
 
-alias l='ls -lFh'     #size, show type, human readable
-alias la='ls -lAFh'   #long list, show almost all, show type, human readable
-alias lr='ls -tRFh'   #sorted by date, recursive, show type, human readable
-alias lt='ls -ltFh'   #long list, sorted by date, show type, human readable
+alias l='ls -lAFh' # long list, show almost all, show type, human readable
 
 # cd, because typing the backslash is ALOT of work!!
 alias .='cd ../'
