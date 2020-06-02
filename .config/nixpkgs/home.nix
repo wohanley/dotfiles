@@ -152,4 +152,9 @@ in {
     '';
     search.excludeTags = ["deleted" "spam"];
   };
+
+  services.syncthing = {
+    enable = true;
+    tray = true; # also install qsyncthingtray. note this pulls in a lot from Qt
+  };
 }
