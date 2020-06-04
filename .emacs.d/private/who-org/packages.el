@@ -366,9 +366,6 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
   (setq org-roam-directory "~/org/zettelkasten")
   (setq org-roam-buffer-width 0.25)
 
-  ;; build cache in background
-  (add-hook 'org-roam-mode-hook 'org-roam--build-cache-async)
-
   ;; show backlinks on opening zettel. not doing this right now because it has a
   ;; lot of weird knock-on effects. maybe there's a more stable way to do it
   ;; (add-hook 'find-file-hook #'who-org/show-backlinks)

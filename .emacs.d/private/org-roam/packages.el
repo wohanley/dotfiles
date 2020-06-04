@@ -1,6 +1,5 @@
 (defconst org-roam-packages
-  '((org-roam :location
-              (recipe :fetcher github :repo "jethrokuan/org-roam" :branch "develop"))))
+  '(org-roam))
 
 (defun org-roam/init-org-roam ()
   (use-package org-roam
