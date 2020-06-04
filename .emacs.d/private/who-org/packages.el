@@ -32,7 +32,7 @@
 ;;; Code:
 
 (defconst who-org-packages
-  '(calfw calfw-org deft org org-agenda org-clock-convenience org-download org-emms org-gcal org-noter org-pdftools org-roam org-wild-notifier))
+  '(calfw calfw-org deft org org-agenda org-clock-convenience org-download org-emms org-gcal org-noter org-pdftools org-roam org-roam-server org-wild-notifier))
 
 (defun who-org/init-calfw ()
   "Initialize calfw and add key-bindings"
@@ -374,6 +374,17 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
     (when (and (not (get-buffer-window org-roam-buffer))
                (f-descendant-of? buffer-file-name (f-join (getenv "HOME") "org/zettelkasten")))
       (org-roam))))
+
+(defun who-org/init-org-roam-server ()
+  (use-package org-roam-server
+    :commands org-roam-server-mode
+    :config
+    (setq org-roam-server-host "127.0.0.1"
+          org-roam-server-port 8080
+          org-roam-server-authenticate nil
+          org-roam-server-label-truncate t
+          org-roam-server-label-truncate-length 60
+          org-roam-server-label-wrap-length 20)))
 
 (defun who-org/init-org-wild-notifier ()
   (use-package org-wild-notifier
