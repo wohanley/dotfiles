@@ -344,6 +344,8 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
 (defun who-org/init-org-noter ()
   (use-package org-noter
     :after org
+    :custom
+    (org-noter-insert-note-no-questions t)
     :bind (:map org-noter-doc-mode-map
                 ("d" . 'who/org-noter-insert-highlighted-note)
                 ("h" . 'pdf-annot-add-highlight-markup-annotation))))
