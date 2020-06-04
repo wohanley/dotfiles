@@ -380,4 +380,5 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
 
 (defun who-org/init-org-wild-notifier ()
   (use-package org-wild-notifier
-    :hook (after-init . org-wild-notifier-mode)))
+    :hook (after-init . org-wild-notifier-mode)
+    :custom (alert-default-style 'libnotify)))
