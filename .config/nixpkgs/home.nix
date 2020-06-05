@@ -153,6 +153,16 @@ in {
     search.excludeTags = ["deleted" "spam"];
   };
 
+  # notmuch-show-view-part uses .mailcap for file associations. not sure what
+  # mechanism I'm using in general or why it doesn't apply here - investigate
+  home.file.".mailcap".text = ''
+    application/vnd.openxmlformats-officedocument.wordprocessingml.document; /usr/bin/xdg-open %s
+  '';
+
+  ###
+  # Syncthing
+  ###
+
   services.syncthing = {
     enable = true;
     tray = true; # also install qsyncthingtray. note this pulls in a lot from Qt
