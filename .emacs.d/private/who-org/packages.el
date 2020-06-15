@@ -234,7 +234,9 @@
               (define-key org-agenda-mode-map "o" 'org-agenda-clock-out)
               (define-key org-agenda-mode-map "s" 'who/org-agenda-process-inbox-item)
               (define-key org-agenda-mode-map "r" 'who/org-process-inbox)
-              (define-key org-agenda-mode-map "R" 'org-agenda-refile)))
+              (define-key org-agenda-mode-map "R" 'org-agenda-refile)
+              (define-key org-agenda-mode-map "y" 'org-agenda-todo-yesterday) ;; overriding org-agenda-year-view
+            ))
 
   (bind-key "<f1>" 'who/switch-to-agenda)
 
@@ -365,6 +367,7 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
 ;;       (add-hook 'pdf-annot-activate-handler-functions 'org-noter-jump-to-note))))
 
 (defun who-org/post-init-org-roam ()
+  (require 'org-roam-protocol)
   (setq org-roam-directory "~/org/zettelkasten")
   (setq org-roam-buffer-width 0.25)
 

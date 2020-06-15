@@ -549,7 +549,7 @@ http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslin
   (let ((filename (car args)))
     (if (cl-find-if
          (lambda (regexp) (string-match regexp filename))
-         '("\\.pdf\\'" "\\.docx?\\'"))
+         '("\\.docx?\\'"))
         (who/xdg-open filename)
       (apply orig-fun args))))
 

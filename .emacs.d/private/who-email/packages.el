@@ -187,7 +187,8 @@ Each entry is either:
     (defun who/notmuch-tree-spam ()
       (interactive)
       (spam-start-process (notmuch-tree-get-messages-ids-thread-search))
-      (notmuch-tree-tag-thread (list "+spam" "-maybe-spam" "-inbox")))
+      (notmuch-tree-tag-thread (list "+spam" "-maybe-spam" "-inbox"))
+      (notmuch-tree-next-thread))
 
     ;;;
     ;; notmuch-show
