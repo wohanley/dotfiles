@@ -41,4 +41,7 @@ volnoti -t 1 # volume change notifications
 xbindkeys
 #/opt/piavpn/bin/piaclient & # not sure why this doesn't work here, put it in .config/i3/config instead
 
+# Swap lctl and caps. Tried this in .profile first, not sure why it doesn't work there
+setxkbmap -option ctrl:swapcaps
+
 exec i3

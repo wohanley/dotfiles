@@ -48,9 +48,6 @@ if [ "$(uname -s)" = 'Darwin' ]; then
     launchctl setenv PATH "$PATH"
 fi
 
-# Swap lctl and caps
-setxkbmap -option ctrl:swapcaps
-
 export EDITOR=start-emacs
 
 [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx
