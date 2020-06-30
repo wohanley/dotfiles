@@ -150,10 +150,6 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-assign [class="(?i)thunderbird"]  1
-assign [class="(?i)clementine"]   2
-assign [class="(?i)firefox"]      3
-
 # theme: solarized via i3-style
 client.focused #586e75 #586e75 #fdf6e3 #268bd2
 client.focused_inactive #073642 #073642 #93a1a1 #002b36
