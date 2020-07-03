@@ -1,0 +1,11 @@
+(progn
+  (let* ((filenames (notdeft-list-files-by-query "!all 20200525194549_bibliography.org"))
+         (paths (mapcar (lambda (filename) (concat notdeft-directory filename)) filenames)))
+    (dolist (path paths)
+      (find-file path)
+      (beginning-of-buffer)
+      (move-end-of-line nil)
+      (newline-and-indent)
+      (insert "#+roam_tags: bib")
+      (replace-string " [[file:20200525194549_bibliography.org][bib]]" "")
+      (save-buffer))))
