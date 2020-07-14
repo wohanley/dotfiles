@@ -32,7 +32,24 @@
 ;;; Code:
 
 (defconst who-org-packages
-  '(calfw calfw-org deft org org-agenda org-clock-convenience org-download org-emms org-gcal org-noter org-pdftools org-roam org-roam-server org-wild-notifier))
+  '(calfw
+    calfw-org
+    deft
+    org
+    org-agenda
+    org-clock-convenience
+    org-download
+    org-emms
+    (org-fc :location (recipe :fetcher github
+                              :repo "l3kn/org-fc"
+                              :files (:defaults "awk" "demo.org")))
+    org-gcal
+    org-noter
+    org-pdftools
+    (org-player :location local)
+    org-roam
+    (org-roam-server :location local)
+    org-wild-notifier))
 
 (defun who-org/init-calfw ()
   "Initialize calfw and add key-bindings"
@@ -365,6 +382,9 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
 ;;     :config
 ;;     (with-eval-after-load 'pdf-annot
 ;;       (add-hook 'pdf-annot-activate-handler-functions 'org-noter-jump-to-note))))
+
+(defun who-org/init-org-player ()
+  (require 'org-player))
 
 (defun who-org/post-init-org-roam ()
   (require 'org-roam-protocol)
