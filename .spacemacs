@@ -90,7 +90,7 @@ This function should only modify configuration layer settings."
    ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '(dtrt-indent)
+   dotspacemacs-additional-packages '(dtrt-indent org-plus-contrib sudo-edit web-server)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -553,7 +553,11 @@ http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslin
         (who/xdg-open filename)
       (apply orig-fun args))))
 
-(advice-add 'find-file :around 'who/find-file-auto)
+(defmacro who/measure-time (&rest body)
+  "Measure the time it takes to evaluate BODY."
+  `(let ((time (current-time)))
+     ,@body
+     (message "%.06f" (float-time (time-since time)))))
 
 (defun dotspacemacs/user-config ()
   "Configuration for user code:

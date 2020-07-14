@@ -88,9 +88,9 @@
   (add-to-list 'org-modules 'org-habit)
   (add-to-list 'org-modules 'org-protocol)
 
-  (require 'org-contacts)
-  (add-to-list 'org-modules 'org-contacts)
-  (setq org-contacts-files (notdeft-list-files-by-query "!all tag:person"))
+  ;; (require 'org-contacts)
+  ;; (add-to-list 'org-modules 'org-contacts)
+  ;; (setq org-contacts-files (notdeft-list-files-by-query "!all tag:person"))
 
   (require 'org-id)
   (setq org-id-link-to-org-use-id t)
@@ -121,6 +121,7 @@
 
   ;; (add-hook 'org-mode-hook #'who/style-org))
 
+  (spacemacs/set-leader-keys-for-major-mode 'org-mode "n" 'org-noter)
   (spacemacs/set-leader-keys-for-major-mode 'org-mode "ir" 'who/org-insert-link-to-latest))
 
 (defun who-org/find-projects ()
@@ -137,7 +138,8 @@
     (find-lisp-find-files directory "\.org$"))
 
   (setq org-agenda-files (append (who/find-org-files who/org-agenda-directory)
-                                 (who-org/find-projects)))
+                                 (who-org/find-projects)
+                                 (who-org/find-areas-of-responsibility)))
 
   (setq org-log-done 'time
         org-log-into-drawer t
@@ -323,6 +325,11 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
     :config
     (setq org-emms-default-directory "~/org/library")
     (setq org-emms-delay 1)))
+
+(defun who-org/init-org-fc ()
+  (use-package hydra)
+  (require 'org-fc-hydra)
+  (setq org-fc-directories '("~/org/zettelkasten")))
 
 (defun who/org-schedule-incl-gcal-at-point ()
   "Schedule the org item at point and post it to gcal."
