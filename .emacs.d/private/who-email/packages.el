@@ -61,15 +61,23 @@ Each entry is either:
 (defun who-email/post-init-org ()
   (require 'ol-notmuch))
 
+(defun who/open-email-inbox ()
+  "Open and refresh the notmuch inbox buffer, or create a new one if necessary."
+  (interactive)
+  (let ((inbox-buffer (get-buffer "*notmuch-tree-tag:inbox*")))
+    (if inbox-buffer
+        (progn
+          (switch-to-buffer inbox-buffer)
+          (notmuch-refresh-this-buffer))
+      (notmuch-tree "tag:inbox"))))
+
 (defun who-email/init-notmuch ()
   (use-package notmuch
     :preface (setq-default notmuch-command (executable-find "notmuch"))
 
     :if (executable-find "notmuch")
 
-    :bind (("<f2>" . notmuch)
-           :map notmuch-tree-mode-map
-           ("<f2>" . (lambda () (interactive) (notmuch-tree "tag:inbox")))
+    :bind (("<f2>" . who/open-email-inbox)
            :map notmuch-search-mode-map
            ("d" . who/notmuch-search-uninbox)
            ("y" . who/notmuch-search-toggle-unread)
@@ -188,7 +196,7 @@ Each entry is either:
       (interactive)
       (spam-start-process (notmuch-tree-get-messages-ids-thread-search))
       (notmuch-tree-tag-thread (list "+spam" "-maybe-spam" "-inbox"))
-      (notmuch-tree-next-thread))
+      (notmuch-tree-next-matching-message))
 
     ;;;
     ;; notmuch-show
@@ -236,7 +244,6 @@ timestamp."
     (message-kill-buffer-on-exit t)
     (notmuch-always-prompt-for-sender t)
     (notmuch-crypto-process-mime t)
-    (notmuch-hello-sections '(notmuch-hello-insert-saved-searches))
     ;; (notmuch-labeler-hide-known-labels t)
     (notmuch-search-oldest-first nil)
     (notmuch-archive-tags '("+archived" "-inbox" "-unread"))
