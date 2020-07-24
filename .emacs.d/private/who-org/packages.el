@@ -204,6 +204,9 @@
     "Visit each parent task and change NEXT states to TODO"
     (org-todo "NEXT"))
 
+  ;; Don't show deadline warnings for scheduled TODOs until scheduled date
+  (setq org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled)
+
   (setq who/org-agenda-todo-view
         `(" " "Agenda"
           ((agenda ""
