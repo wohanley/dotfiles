@@ -174,12 +174,14 @@ the POS string."
       (sleep-for 1) ;; wait for VLC to start up
       (playerctl-set-position seek))))
 
-(defun org-player-insert-link-to-position ()
+(defun org-player-insert-link-to-position (&optional delay)
   "Insert a 'file:' link to the current position in the currently
-playing track."
+playing track. Link to a position delay seconds back if
+specified (good for adding context and taking pressure off
+reaction times)."
   (interactive)
   (let* ((file-url (string-trim (shell-command-to-string "playerctl metadata xesam:url")))
-         (position (string-to-number (shell-command-to-string "playerctl position")))
+         (position (- (string-to-number (shell-command-to-string "playerctl position")) (or delay 0)))
          (timestamp (org-player-time-to-string position))
          (link (replace-regexp-in-string "file://" "file:" file-url))
          (link-timestamped (concat link "::" timestamp)))
