@@ -183,7 +183,7 @@ reaction times)."
   (let* ((file-url (string-trim (shell-command-to-string "playerctl metadata xesam:url")))
          (position (- (string-to-number (shell-command-to-string "playerctl position")) (or delay 0)))
          (timestamp (org-player-time-to-string position))
-         (link (replace-regexp-in-string "file://" "file:" file-url))
+         (link (url-unhex-string file-url))
          (link-timestamped (concat link "::" timestamp)))
     (insert (format "[[%s][%s]]" link-timestamped timestamp))))
 
