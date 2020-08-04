@@ -11,6 +11,10 @@
   (let ((file (who/latest-file "~/org/library")))
     (funcall-interactively 'org-insert-link nil file (f-filename file))))
 
+(defun who/org-player-insert-link-to-position ()
+  (interactive)
+  (org-player-insert-link-to-position 7))
+
 ;;;
 ;; org-agenda
 ;;;

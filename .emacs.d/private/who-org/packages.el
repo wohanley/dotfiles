@@ -394,7 +394,8 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
 ;;       (add-hook 'pdf-annot-activate-handler-functions 'org-noter-jump-to-note))))
 
 (defun who-org/init-org-player ()
-  (require 'org-player))
+  (require 'org-player)
+  (spacemacs/set-leader-keys-for-major-mode 'org-mode "i w" 'who/org-player-insert-link-to-position))
 
 (defun who-org/post-init-org-roam ()
   (require 'org-roam-protocol)
