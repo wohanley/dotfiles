@@ -75,6 +75,8 @@ Each entry is either:
   (use-package notmuch
     :preface (setq-default notmuch-command (executable-find "notmuch"))
 
+    :commands (notmuch notmuch-tree)
+
     :if (executable-find "notmuch")
 
     :bind (("<f2>" . who/open-email-inbox)
