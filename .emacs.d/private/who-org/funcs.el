@@ -11,6 +11,18 @@
   (let ((file (who/latest-file "~/org/library")))
     (funcall-interactively 'org-insert-link nil file (f-filename file))))
 
+(defun who/org-noter-latest ()
+  (interactive)
+  (save-excursion
+    (beginning-of-buffer)
+    (move-end-of-line nil)
+    (insert "\n#+roam_tags: bib"))
+  (insert "* Notes\n")
+  (let* ((file (who/latest-file "~/org/library"))
+        (relative-file (file-relative-name file "~/org/zettelkasten")))
+    (org-set-property "NOTER_DOCUMENT" relative-file)
+    (org-noter)))
+
 (defun who/org-player-insert-link-to-position ()
   (interactive)
   (org-player-insert-link-to-position 7))

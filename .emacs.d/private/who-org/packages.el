@@ -176,7 +176,7 @@
   (setq org-refile-allow-creating-parent-nodes 'confirm)
   (setq org-refile-targets '(("next.org" :level . 0)
                              ("someday.org" :level . 0)
-                             ("reading.org" :level . 1)
+                             ("consume.org" :level . 0)
                              (who-org/find-projects :level . 0)
                              (who-org/find-areas-of-responsibility :level . 0)))
 
@@ -188,7 +188,7 @@
 
   (setq who/org-agenda-reading-view
         `("r" "Reading" todo ""
-          ((org-agenda-files '(,(concat who/org-agenda-directory "reading.org"))))))
+          ((org-agenda-files '(,(concat who/org-agenda-directory "consume.org"))))))
 
   (add-to-list 'org-agenda-custom-commands `,who/org-agenda-reading-view)
 
@@ -232,7 +232,11 @@
            (todo "TODO"
                  ((org-agenda-overriding-header "Someday")
                   (org-agenda-files '(,(concat who/org-agenda-directory "someday.org")))
-                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp)))))
+                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp))))
+          (todo "TODO"
+                ((org-agenda-overriding-header "Reading")
+                 (org-agenda-files '(,(concat who/org-agenda-directory "consume.org")))
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp)))))
            nil))
 
   (add-to-list 'org-agenda-custom-commands `,who/org-agenda-todo-view)

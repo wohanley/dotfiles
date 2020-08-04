@@ -637,7 +637,9 @@ before packages are loaded."
   ;; so "# -*- coding: utf8 -*-" works
   (define-coding-system-alias 'utf8 'utf-8)
   ;; PDFs open too small without this
-  (add-hook 'pdf-view-mode-hook 'pdf-view-fit-width-to-window))
+  (add-hook 'pdf-view-mode-hook 'pdf-view-fit-width-to-window)
+  ;; swiper doesn't work in pdf-view-mode, use normal isearch instead
+  (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
