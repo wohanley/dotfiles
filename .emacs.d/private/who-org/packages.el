@@ -422,9 +422,8 @@ Inspired by https://github.com/daviderestivo/emacs-config/blob/6086a7013020e19c0
     (setq org-roam-server-host "127.0.0.1"
           org-roam-server-port 8080
           org-roam-server-authenticate nil
-          org-roam-server-label-truncate t
-          org-roam-server-label-truncate-length 60
-          org-roam-server-label-wrap-length 20)))
+          org-roam-server-network-autoreload nil
+          org-roam-server-network-vis-options "{ \"layout\": { \"randomSeed\": 191006 }, \"physics\": { \"stabilization\": { \"iterations\": 10000, \"fit\": false, \"updateInterval\": 10000 }, \"barnesHut\": { \"gravitationalConstant\": -2000, \"springConstant\": 0.04, \"springLength\": 95 } } }")))
 
 (defun who-org/init-org-wild-notifier ()
   (use-package org-wild-notifier
