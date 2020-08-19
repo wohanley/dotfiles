@@ -44,4 +44,6 @@ xbindkeys
 # Swap lctl and caps. Tried this in .profile first, not sure why it doesn't work there
 setxkbmap -option ctrl:swapcaps
 
+feh --bg-scale ~/bliss.jpg
+
 exec i3
