@@ -108,7 +108,9 @@ Each entry is either:
            ("F" . notmuch-show-forward-message))
 
     :config
-    (setq notmuch-identities '("me@wohanley.com" "whohanley@uvic.ca" "willy.ohanley@gmail.com"))
+    (setq notmuch-identities '("William O'Hanley <me@wohanley.com>"
+                               "William O'Hanley <whohanley@uvic.ca>"
+                               "William O'Hanley <willy.ohanley@gmail.com>"))
 
     ;; inline seems less weird. still not really sure how attachment vs inline forwarding works
     (defun who/notmuch-show-forward-inline (prefix)
