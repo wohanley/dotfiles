@@ -63,6 +63,12 @@ signal=10
 interval=600
 ALERT_LOW=2
 
+[bandwidth]
+interval=3
+#INTERFACE=eth0
+INLABEL=⮟
+OUTLABEL=⮝
+
 # Memory usage
 #
 # The type defaults to "mem" if the instance is not specified.
@@ -75,12 +81,6 @@ interval=30
 #label=SWAP
 instance=swap
 interval=30
-
-[bandwidth]
-interval=3
-#INTERFACE=eth0
-INLABEL=⮟
-OUTLABEL=⮝
 
 # CPU usage
 #
