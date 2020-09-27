@@ -1,0 +1,8 @@
+[Unit]
+Description=Run backup through Duplicity
+
+[Service]
+# sleep before starting in case we just booted (backup.timer has Persistent=true)
+TimeoutStartSec=200
+ExecStartPre=/bin/sleep 120
+ExecStart=%h/scripts/duplicity.sh
