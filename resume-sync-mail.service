@@ -3,12 +3,16 @@ Description=Check mail after wake
 After=suspend.target
 
 [Service]
-Type=simple
+Type=oneshot
 User=wohanley
 # fucky PATH shit because this can't just be a user unit, see wake-sync.sh for
 # further complaints
 Environment="PATH=/home/wohanley/.nix-profile/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 ExecStart=/home/wohanley/scripts/mail/wake-sync.sh
+# very likely to see failures due to no network. retry a few times
+Restart=on-failure
+RestartSec=6
+StartLimitBurst=10
 
 [Install]
 WantedBy=suspend.target

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 LOG_FILE="${HOME}/.log/mail.log"
 LOGGING_ENABLED=false
 
